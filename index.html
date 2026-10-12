@@ -1,1222 +1,230 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Localizador de Delegacias PB - WinZip144</title>
-    <meta name="description"
-        content="Sistema de Consulta de Circunscrição Policial e Localizador de Delegacias da Paraíba. WinZip144.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --card-hover: #1c2128;
-            --text-color: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #30363d;
-            --yellow: #f1c40f;
-            --yellow-hover: #d4ac0d;
-            --yellow-glow: rgba(241, 196, 15, 0.15);
-            --black: #010409;
-            --overlay-bg: rgba(0, 0, 0, 0.75);
-            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-family);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            line-height: 1.5;
-        }
-
-        /* HEADER */
-        header {
-            background-color: var(--black);
-            border-bottom: 3px solid var(--yellow);
-            padding: 1.25rem 1rem;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        header h1 {
-            color: var(--yellow);
-            font-size: 1.45rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.88rem;
-        }
-
-        /* MAIN CONTAINER */
-        main {
-            flex: 1;
-            max-width: 850px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 1.25rem 1rem;
-        }
-
-        .alert-box {
-            background-color: var(--yellow-glow);
-            border: 1px solid rgba(241, 196, 15, 0.3);
-            border-left: 4px solid var(--yellow);
-            padding: 0.85rem 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 1.25rem;
-            color: var(--text-color);
-            line-height: 1.4;
-        }
-
-        .alert-box strong {
-            color: var(--yellow);
-        }
-
-        .search-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.25rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            margin-bottom: 1.25rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 640px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 0.85rem;
-            }
-
-            header h1 {
-                font-size: 1.2rem;
-            }
-
-            main {
-                padding: 1rem 0.75rem;
-            }
-
-            .search-container {
-                padding: 1rem;
-            }
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--yellow);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .relative-wrapper {
-            position: relative;
-        }
-
-        select,
-        input[type="text"] {
-            width: 100%;
-            min-height: 46px;
-            padding: 0.75rem 0.9rem;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 0.95rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f1c40f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.9rem center;
-            background-size: 16px;
-            padding-right: 2.5rem;
-        }
-
-        select:focus,
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--yellow);
-            box-shadow: 0 0 0 3px var(--yellow-glow);
-        }
-
-        select option {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-        }
-
-        /* QUICK CITIES SCROLLABLE CHIPS */
-        .quick-cities {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.75rem;
-            align-items: center;
-        }
-
-        .quick-cities-title {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-right: 0.2rem;
-            width: 100%;
-        }
-
-        @media (min-width: 500px) {
-            .quick-cities-title {
-                width: auto;
-            }
-        }
-
-        .city-chip {
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 0.4rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-height: 34px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .city-chip:hover,
-        .city-chip.active {
-            background-color: var(--yellow-glow);
-            border-color: var(--yellow);
-            color: var(--yellow);
-        }
-
-        /* AUTOCOMPLETE SUGGESTIONS */
-        .suggestions {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            max-height: 240px;
-            overflow-y: auto;
-            position: absolute;
-            width: 100%;
-            z-index: 100;
-            margin-top: 4px;
-            display: none;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-        }
-
-        .suggestion-item {
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .suggestion-item:last-child {
-            border-bottom: none;
-        }
-
-        .suggestion-item:hover,
-        .suggestion-item:active {
-            background-color: var(--card-hover);
-            color: var(--yellow);
-        }
-
-        .suggestion-tag {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            background: var(--bg-color);
-            padding: 0.15rem 0.45rem;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-
-        /* RESULT CARDS */
-        .results-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .result-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-left: 5px solid var(--yellow);
-            border-radius: 10px;
-            padding: 1.25rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .result-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.75rem;
-            margin-bottom: 0.85rem;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .result-title-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .result-header h3 {
-            color: var(--yellow);
-            font-size: 1.15rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .result-subtitle {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-        }
-
-        .maps-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.45rem;
-            background-color: var(--yellow);
-            color: var(--black);
-            padding: 0.6rem 1rem;
-            min-height: 42px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: background-color 0.2s ease;
-            white-space: nowrap;
-            width: 100%;
-        }
-
-        @media (min-width: 550px) {
-            .maps-btn {
-                width: auto;
-            }
-        }
-
-        .maps-btn:hover {
-            background-color: var(--yellow-hover);
-        }
-
-        .maps-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-            font-size: 0.92rem;
-        }
-
-        .info-group {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 0.4rem;
-        }
-
-        .info-group strong {
-            color: var(--yellow);
-            font-weight: 600;
-            min-width: 110px;
-        }
-
-        .tel-link {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .tel-link:hover {
-            color: var(--yellow);
-            text-decoration: underline;
-        }
-
-        .obs-text {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            margin-top: 0.85rem;
-            padding-top: 0.65rem;
-            border-top: 1px dashed var(--border-color);
-            line-height: 1.4;
-        }
-
-        .no-results {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.92rem;
-        }
-
-        .status-tag {
-            display: inline-block;
-            padding: 0.15rem 0.45rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 0.4rem;
-            text-transform: uppercase;
-        }
-
-        .status-live {
-            background: rgba(46, 204, 113, 0.15);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.4);
-        }
-
-        .status-cached {
-            background: rgba(241, 196, 15, 0.15);
-            color: var(--yellow);
-            border: 1px solid rgba(241, 196, 15, 0.4);
-        }
-
-        /* POPUP MODAL WINZIP144 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--overlay-bg);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-box {
-            background-color: var(--card-bg);
-            border: 2px solid var(--yellow);
-            border-radius: 12px;
-            padding: 2rem 1.5rem;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal-box {
-            transform: scale(1);
-        }
-
-        .modal-box h2 {
-            color: var(--yellow);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            letter-spacing: 1px;
-        }
-
-        .modal-box p {
-            font-size: 0.92rem;
-            color: var(--text-color);
-            margin-bottom: 1.5rem;
-            line-height: 1.4;
-        }
-
-        .btn-modal-close {
-            background-color: var(--yellow);
-            color: var(--black);
-            border: none;
-            padding: 0.7rem 1.75rem;
-            font-size: 0.95rem;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            width: 100%;
-            min-height: 44px;
-        }
-
-        .btn-modal-close:hover {
-            background-color: var(--yellow-hover);
-        }
-
-        footer {
-            background-color: var(--black);
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-            padding: 1.25rem 1rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 2.5rem;
-        }
-
-        footer a {
-            color: #ffffff;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        footer a:hover {
-            color: var(--yellow);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Localizador de Delegacias PB</title>
+  <meta name="description" content="Sistema de consulta de circunscrição policial e localizador de delegacias da Paraíba.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0d1117;--card:#161b22;--hover:#1c2128;--text:#f0f6fc;--muted:#8b949e;--border:#30363d;--yellow:#f1c40f;--yellow2:#d4ac0d;--glow:rgba(241,196,15,.15);--black:#010409;--overlay:rgba(0,0,0,.75);--font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:var(--font);-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;line-height:1.5}
+    header{background:var(--black);border-bottom:3px solid var(--yellow);padding:1.25rem 1rem;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+    .header-content{max-width:850px;margin:auto;display:flex;flex-direction:column;align-items:center;gap:.4rem}
+    header h1{color:var(--yellow);font-size:1.45rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+    header p{color:var(--muted);font-size:.88rem}
+    main{flex:1;max-width:850px;width:100%;margin:0 auto;padding:1.25rem 1rem}
+    .search-container,.specialized-container{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:0 8px 20px rgba(0,0,0,.35);margin-bottom:1.25rem}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+    .form-group{display:flex;flex-direction:column;gap:.4rem}
+    .form-group label,.section-label{font-weight:600;color:var(--yellow);font-size:.85rem;display:flex;align-items:center;gap:.35rem}
+    .relative-wrapper{position:relative}
+    select,input[type="text"]{width:100%;min-height:46px;padding:.75rem .9rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.95rem;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f1c40f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;background-size:16px;padding-right:2.5rem}
+    select:focus,input[type="text"]:focus{outline:none;border-color:var(--yellow);box-shadow:0 0 0 3px var(--glow)}
+    select option{background:var(--card);color:var(--text)}
+    .quick-select{margin-top:.85rem;display:grid;grid-template-columns:auto minmax(220px,1fr);gap:.7rem;align-items:center}
+    .quick-select span{font-size:.78rem;color:var(--muted);white-space:nowrap}
+    .quick-select select{min-height:40px;padding-top:.55rem;padding-bottom:.55rem;font-size:.86rem}
+    .specialized-shortcut{margin-top:.7rem;display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;min-height:40px;padding:.55rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--yellow);font-size:.84rem;font-weight:600;text-decoration:none;transition:.2s}
+    .specialized-shortcut:hover{border-color:var(--yellow);background:var(--glow)}
+    .specialized-shortcut svg{width:15px;height:15px;fill:currentColor}
+    .suggestions{background:var(--card);border:1px solid var(--border);border-radius:8px;max-height:240px;overflow-y:auto;position:absolute;width:100%;z-index:100;margin-top:4px;display:none;box-shadow:0 8px 24px rgba(0,0,0,.7)}
+    .suggestion-item{padding:.75rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);font-size:.9rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+    .suggestion-item:last-child{border-bottom:0}.suggestion-item:hover{background:var(--hover);color:var(--yellow)}
+    .suggestion-tag{font-size:.72rem;color:var(--muted);background:var(--bg);padding:.15rem .45rem;border-radius:4px;white-space:nowrap}
+    .results-container{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.25rem}
+    .result-card{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--yellow);border-radius:10px;padding:1.15rem;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+    .result-header{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:.75rem;margin-bottom:.85rem;gap:.75rem;flex-wrap:wrap}
+    .result-title-group{flex:1;min-width:200px}.result-header h3{color:var(--yellow);font-size:1.08rem;font-weight:700;line-height:1.3}.result-subtitle{font-size:.82rem;color:var(--muted);margin-top:.2rem}
+    .maps-btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;background:var(--yellow);color:var(--black);padding:.58rem .9rem;min-height:40px;border-radius:6px;text-decoration:none;font-weight:600;font-size:.82rem;transition:.2s;white-space:nowrap}.maps-btn:hover{background:var(--yellow2)}
+    .maps-btn svg{width:15px;height:15px;fill:currentColor}
+    .info-grid{display:grid;grid-template-columns:1fr;gap:.45rem;font-size:.9rem}.info-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem}.info-group strong{color:var(--yellow);font-weight:600;min-width:105px}.tel-link{color:var(--text);text-decoration:none;font-weight:500}.tel-link:hover{color:var(--yellow);text-decoration:underline}
+    .obs-text{font-size:.8rem;color:var(--muted);margin-top:.75rem;padding-top:.6rem;border-top:1px dashed var(--border)}
+    .no-results{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-align:center;color:var(--muted);font-size:.9rem}
+    .status-tag{display:inline-block;padding:.14rem .42rem;border-radius:4px;font-size:.68rem;font-weight:600;margin-left:.35rem;text-transform:uppercase}.status-live{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.4)}.status-cached{background:var(--glow);color:var(--yellow);border:1px solid rgba(241,196,15,.4)}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem}.section-head h2{font-size:1.05rem;color:var(--yellow)}.section-head p{font-size:.78rem;color:var(--muted)}
+    .specialized-grid{display:grid;grid-template-columns:1fr;gap:.8rem}.specialized-results{display:flex;flex-direction:column;gap:.65rem;margin-top:.9rem}.specialized-card{border:1px solid var(--border);border-radius:9px;background:var(--bg);padding:.9rem}.specialized-card h3{font-size:.96rem;color:var(--text);margin-bottom:.18rem}.specialized-card .meta{font-size:.76rem;color:var(--yellow);font-weight:600;margin-bottom:.55rem}.specialized-card .purpose{font-size:.82rem;color:var(--muted);margin-bottom:.65rem}.specialized-card .contact-line{display:flex;gap:.4rem;align-items:flex-start;font-size:.82rem;margin-top:.28rem}.specialized-card .contact-line strong{color:var(--yellow);min-width:70px;font-weight:600}.specialized-card .actions{margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap}.specialized-container{scroll-margin-top:1rem}
+    footer{background:var(--black);border-top:1px solid var(--border);text-align:center;padding:1.25rem 1rem;font-size:.8rem;color:var(--muted);margin-top:1.5rem}footer a{color:#fff;font-weight:600;text-decoration:underline}footer a:hover{color:var(--yellow)}
+    .modal-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:.3s}.modal-overlay.active{opacity:1;visibility:visible}.modal-box{background:var(--card);border:2px solid var(--yellow);border-radius:12px;padding:2rem 1.5rem;max-width:400px;width:100%;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,.8);transform:scale(.92);transition:.3s}.modal-overlay.active .modal-box{transform:scale(1)}.modal-box h2{color:var(--yellow);font-size:1.7rem;margin-bottom:.75rem}.modal-box p{font-size:.9rem;margin-bottom:1.5rem}.btn-modal-close{background:var(--yellow);color:var(--black);border:0;padding:.7rem 1.5rem;font-weight:700;border-radius:8px;cursor:pointer;width:100%;min-height:44px}.btn-modal-close:hover{background:var(--yellow2)}
+    @media(max-width:640px){header h1{font-size:1.18rem}main{padding:1rem .75rem}.search-container,.specialized-container{padding:1rem}.form-grid,.specialized-grid{grid-template-columns:1fr}.quick-select{grid-template-columns:1fr;gap:.35rem}.section-head{align-items:flex-start;flex-direction:column;gap:.25rem}.maps-btn{width:100%}}
+  </style>
 </head>
-
 <body>
+  <div id="popup-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h2>WinZip144</h2>
+      <p>Sistema NÃO OFICIAL, criado por servidor apenas para contribuir com os colegas. Depois doe um cafezinho =)</p>
+      <button id="modal-close-btn" class="btn-modal-close">Entrar no Sistema</button>
+    </div>
+  </div>
 
-    <!-- POPUP MODAL WINZIP144 -->
-    <div id="popup-modal" class="modal-overlay">
-        <div class="modal-box">
-            <h2>WinZip144</h2>
-            <p>Sistema NÃO OFICIAL, criado por servidor apenas para contribuir com os colegas. Depois doe um cafezinho =)</p>
-            <button id="modal-close-btn" class="btn-modal-close">Entrar no Sistema</button>
+  <header>
+    <div class="header-content">
+      <h1>Localizador de Delegacias PB</h1>
+      <p>Consulta de Circunscrição Policial na maioria dos Municípios da Paraíba</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="search-container">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="cidade-select">Selecione a Cidade (223 Municípios):</label>
+          <select id="cidade-select"><option value="">-- Escolha uma cidade --</option></select>
         </div>
+        <div class="form-group">
+          <label for="bairro-select">Bairro (Opcional):</label>
+          <select id="bairro-select" disabled><option value="">-- Todos os Bairros / Selecione a Cidade --</option></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-input">Busca Direta:</label>
+        <div class="relative-wrapper">
+          <input type="text" id="search-input" placeholder="Ex: mangabeira, catole, joao pessoa, patos, sousa, grotao..." autocomplete="off">
+          <div id="suggestions" class="suggestions"></div>
+        </div>
+      </div>
+
+      <div class="quick-select">
+        <span>Atalhos rápidos:</span>
+        <select id="quick-city-select" aria-label="Atalhos rápidos de cidades">
+          <option value="">-- Selecione --</option>
+          <option>João Pessoa</option><option>Campina Grande</option><option>Patos</option><option>Santa Rita</option>
+          <option>Cabedelo</option><option>Sousa</option><option>Cajazeiras</option><option>Guarabira</option>
+        </select>
+      </div>
+      <a class="specialized-shortcut" href="#especializadas" aria-label="Ir para Pesquisar Especializadas">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16.5 5.5 10l1.4-1.4 5.1 5.1 5.1-5.1 1.4 1.4z"/></svg>
+        Pesquisar Especializadas
+      </a>
     </div>
 
-    <header>
-        <div class="header-content">
-            <h1>Localizador de Delegacias PB - WinZip144</h1>
-            <p>Consulta de Circunscrição Policial na maioria dos Municípios da Paraíba</p>
+    <div id="results-container" class="results-container"></div>
+
+    <section id="especializadas" class="specialized-container" aria-labelledby="especializadas-title">
+      <div class="section-head">
+        <div>
+          <h2 id="especializadas-title">Pesquisar Especializadas</h2>
         </div>
-    </header>
-
-    <main>
-        <div class="alert-box">
-            <strong>Critério de Circunscrição:</strong> Baseado nos municípios e bairros oficiais (SESDS/PB) e na
-            estrutura das Delegacias Seccionais da Polícia Civil.
+      </div>
+      <div class="specialized-grid">
+        <div class="form-group">
+          <label for="specialized-search">Pesquisar Especializadas:</label>
+          <select id="specialized-search" aria-label="Pesquisar Especializadas">
+            <option value="">-- Selecione uma especializada --</option>
+          </select>
         </div>
+      </div>
+      <div id="specialized-results" class="specialized-results"></div>
+    </section>
+  </main>
 
-        <div class="search-container">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="cidade-select">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                            <circle cx="12" cy="9" r="2.5" />
-                        </svg>
-                        Selecione a Cidade (223 Municípios):
-                    </label>
-                    <select id="cidade-select">
-                        <option value="">-- Escolha uma cidade --</option>
-                    </select>
-                </div>
+  <footer>
+    <p>Localizador de Delegacias PB &copy; 2026 by WinZip144</p>
+    <p style="margin-top:.3rem">Sistema não oficial de consulta rápida baseado no portal <a href="https://delegaciaonline.pc.pb.gov.br/localizar-delegacias" target="_blank" rel="noopener noreferrer">Delegacia Online PB</a>.</p>
+  </footer>
 
-                <div class="form-group">
-                    <label for="bairro-select">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                            <polyline points="9 22 9 12 15 12 15 22" />
-                        </svg>
-                        Bairro (Opcional):
-                    </label>
-                    <select id="bairro-select" disabled>
-                        <option value="">-- Todos os Bairros / Selecione a Cidade --</option>
-                    </select>
-                </div>
-            </div>
+  <script>
+    function normalizeText(text){return (text||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
+    window.addEventListener('DOMContentLoaded',()=>{const m=document.getElementById('popup-modal'),b=document.getElementById('modal-close-btn');if(m)m.classList.add('active');if(b)b.addEventListener('click',()=>m.classList.remove('active'))});
 
-            <div class="form-group">
-                <label for="search-input">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    Busca Direta (Cidade, Bairro ou Delegacia - Sem diferenciar acento/maiúscula):
-                </label>
-                <div class="relative-wrapper">
-                    <input type="text" id="search-input"
-                        placeholder="Ex: mangabeira, catole, joao pessoa, patos, sousa, grotao..." autocomplete="off">
-                    <div id="suggestions" class="suggestions"></div>
-                </div>
-            </div>
+    const municipiosData = [{ "id": 1244, "nome": "Aguiar" }, { "id": 1245, "nome": "Alagoa Grande" }, { "id": 1246, "nome": "Alagoa Nova" }, { "id": 1247, "nome": "Alagoinha" }, { "id": 1248, "nome": "Alcantil" }, { "id": 1249, "nome": "Algodão de Jandaíra" }, { "id": 1250, "nome": "Alhandra" }, { "id": 1251, "nome": "Amparo" }, { "id": 1252, "nome": "Aparecida" }, { "id": 1254, "nome": "Arara" }, { "id": 1255, "nome": "Araruna" }, { "id": 1253, "nome": "Araçagi" }, { "id": 1256, "nome": "Areia" }, { "id": 1257, "nome": "Areia de Baraúnas" }, { "id": 1258, "nome": "Areial" }, { "id": 1259, "nome": "Aroeiras" }, { "id": 1260, "nome": "Assunção" }, { "id": 1262, "nome": "Bananeiras" }, { "id": 1263, "nome": "Baraúna" }, { "id": 1264, "nome": "Barra de Santa Rosa" }, { "id": 1265, "nome": "Barra de Santana" }, { "id": 1266, "nome": "Barra de São Miguel" }, { "id": 1267, "nome": "Bayeux" }, { "id": 1261, "nome": "Baía da Traição" }, { "id": 1268, "nome": "Belém" }, { "id": 1269, "nome": "Belém do Brejo do Cruz" }, { "id": 1270, "nome": "Bernardino Batista" }, { "id": 1271, "nome": "Boa Ventura" }, { "id": 1272, "nome": "Boa Vista" }, { "id": 1273, "nome": "Bom Jesus" }, { "id": 1274, "nome": "Bom Sucesso" }, { "id": 1275, "nome": "Bonito de Santa Fé" }, { "id": 1276, "nome": "Boqueirão" }, { "id": 1277, "nome": "Borborema" }, { "id": 1278, "nome": "Brejo do Cruz" }, { "id": 1279, "nome": "Brejo dos Santos" }, { "id": 1280, "nome": "Caaporã" }, { "id": 1281, "nome": "Cabaceiras" }, { "id": 1282, "nome": "Cabedelo" }, { "id": 1283, "nome": "Cachoeira dos Índios" }, { "id": 1284, "nome": "Cacimba de Areia" }, { "id": 1285, "nome": "Cacimba de Dentro" }, { "id": 1286, "nome": "Cacimbas" }, { "id": 1287, "nome": "Caiçara" }, { "id": 1288, "nome": "Cajazeiras" }, { "id": 1289, "nome": "Cajazeirinhas" }, { "id": 1290, "nome": "Caldas Brandão" }, { "id": 1291, "nome": "Camalaú" }, { "id": 1292, "nome": "Campina Grande" }, { "id": 1293, "nome": "Capim" }, { "id": 1294, "nome": "Caraúbas" }, { "id": 1295, "nome": "Carrapateira" }, { "id": 1296, "nome": "Casserengue" }, { "id": 1297, "nome": "Catingueira" }, { "id": 1298, "nome": "Catolé do Rocha" }, { "id": 1299, "nome": "Caturité" }, { "id": 1300, "nome": "Conceição" }, { "id": 1301, "nome": "Condado" }, { "id": 1302, "nome": "Conde" }, { "id": 1303, "nome": "Congo" }, { "id": 1304, "nome": "Coremas" }, { "id": 1305, "nome": "Coxixola" }, { "id": 1306, "nome": "Cruz do Espírito Santo" }, { "id": 1307, "nome": "Cubati" }, { "id": 1310, "nome": "Cuitegi" }, { "id": 1308, "nome": "Cuité" }, { "id": 1309, "nome": "Cuité de Mamanguape" }, { "id": 1311, "nome": "Curral de Cima" }, { "id": 1312, "nome": "Curral Velho" }, { "id": 1313, "nome": "Damião" }, { "id": 1314, "nome": "Desterro" }, { "id": 1315, "nome": "Diamante" }, { "id": 1316, "nome": "Dona Inês" }, { "id": 1317, "nome": "Duas Estradas" }, { "id": 1318, "nome": "Emas" }, { "id": 1319, "nome": "Esperança" }, { "id": 1320, "nome": "Fagundes" }, { "id": 1321, "nome": "Frei Martinho" }, { "id": 1322, "nome": "Gado Bravo" }, { "id": 1323, "nome": "Guarabira" }, { "id": 1324, "nome": "Gurinhém" }, { "id": 1325, "nome": "Gurjão" }, { "id": 1326, "nome": "Ibiara" }, { "id": 1327, "nome": "Igaracy" }, { "id": 1328, "nome": "Imaculada" }, { "id": 1329, "nome": "Ingá" }, { "id": 1330, "nome": "Itabaiana" }, { "id": 1331, "nome": "Itaporanga" }, { "id": 1332, "nome": "Itapororoca" }, { "id": 1333, "nome": "Itatuba" }, { "id": 1334, "nome": "Jacaraú" }, { "id": 1335, "nome": "Jericó" }, { "id": 1337, "nome": "Joca Claudino" }, { "id": 1336, "nome": "João Pessoa" }, { "id": 1338, "nome": "Juarez Távora" }, { "id": 1339, "nome": "Juazeirinho" }, { "id": 1340, "nome": "Junco do Seridó" }, { "id": 1341, "nome": "Juripiranga" }, { "id": 1342, "nome": "Juru" }, { "id": 1343, "nome": "Lagoa" }, { "id": 1344, "nome": "Lagoa de Dentro" }, { "id": 1345, "nome": "Lagoa Seca" }, { "id": 1346, "nome": "Lastro" }, { "id": 1347, "nome": "Livramento" }, { "id": 1348, "nome": "Logradouro" }, { "id": 1349, "nome": "Lucena" }, { "id": 1351, "nome": "Malta" }, { "id": 1352, "nome": "Mamanguape" }, { "id": 1353, "nome": "Manaíra" }, { "id": 1354, "nome": "Marcação" }, { "id": 1355, "nome": "Mari" }, { "id": 1356, "nome": "Marizópolis" }, { "id": 1357, "nome": "Massaranduba" }, { "id": 1358, "nome": "Mataraca" }, { "id": 1359, "nome": "Matinhas" }, { "id": 1360, "nome": "Mato Grosso" }, { "id": 1361, "nome": "Maturéia" }, { "id": 1362, "nome": "Mogeiro" }, { "id": 1363, "nome": "Montadas" }, { "id": 1364, "nome": "Monte Horebe" }, { "id": 1365, "nome": "Monteiro" }, { "id": 1366, "nome": "Mulungu" }, { "id": 1350, "nome": "Mãe d'Água" }, { "id": 1367, "nome": "Natuba" }, { "id": 1368, "nome": "Nazarezinho" }, { "id": 1369, "nome": "Nova Floresta" }, { "id": 1370, "nome": "Nova Olinda" }, { "id": 1371, "nome": "Nova Palmeira" }, { "id": 1372, "nome": "Olho d'Água" }, { "id": 1373, "nome": "Olivedos" }, { "id": 1374, "nome": "Ouro Velho" }, { "id": 1375, "nome": "Parari" }, { "id": 1376, "nome": "Passagem" }, { "id": 1377, "nome": "Patos" }, { "id": 1378, "nome": "Paulista" }, { "id": 1379, "nome": "Pedra Branca" }, { "id": 1380, "nome": "Pedra Lavrada" }, { "id": 1381, "nome": "Pedras de Fogo" }, { "id": 1382, "nome": "Pedro Régis" }, { "id": 1383, "nome": "Piancó" }, { "id": 1384, "nome": "Picuí" }, { "id": 1385, "nome": "Pilar" }, { "id": 1386, "nome": "Pilões" }, { "id": 1387, "nome": "Pilõezinhos" }, { "id": 1388, "nome": "Pirpirituba" }, { "id": 1389, "nome": "Pitimbu" }, { "id": 1390, "nome": "Pocinhos" }, { "id": 1393, "nome": "Pombal" }, { "id": 1391, "nome": "Poço Dantas" }, { "id": 1392, "nome": "Poço de José de Moura" }, { "id": 1394, "nome": "Prata" }, { "id": 1395, "nome": "Princesa Isabel" }, { "id": 1396, "nome": "Puxinanã" }, { "id": 1397, "nome": "Queimadas" }, { "id": 1398, "nome": "Quixaba" }, { "id": 1399, "nome": "Remígio" }, { "id": 1403, "nome": "Riacho de Santo Antônio" }, { "id": 1404, "nome": "Riacho dos Cavalos" }, { "id": 1400, "nome": "Riachão" }, { "id": 1401, "nome": "Riachão do Bacamarte" }, { "id": 1402, "nome": "Riachão do Poço" }, { "id": 1405, "nome": "Rio Tinto" }, { "id": 1406, "nome": "Salgadinho" }, { "id": 1407, "nome": "Salgado de São Félix" }, { "id": 1408, "nome": "Santa Cecília" }, { "id": 1409, "nome": "Santa Cruz" }, { "id": 1410, "nome": "Santa Helena" }, { "id": 1411, "nome": "Santa Inês" }, { "id": 1412, "nome": "Santa Luzia" }, { "id": 1413, "nome": "Santa Rita" }, { "id": 1414, "nome": "Santa Teresinha" }, { "id": 1415, "nome": "Santana de Mangueira" }, { "id": 1416, "nome": "Santana dos Garrotes" }, { "id": 1417, "nome": "Santo André" }, { "id": 1441, "nome": "Sapé" }, { "id": 1442, "nome": "Serra Branca" }, { "id": 1443, "nome": "Serra da Raiz" }, { "id": 1444, "nome": "Serra Grande" }, { "id": 1445, "nome": "Serra Redonda" }, { "id": 1446, "nome": "Serraria" }, { "id": 1447, "nome": "Sertãozinho" }, { "id": 1448, "nome": "Sobrado" }, { "id": 1450, "nome": "Soledade" }, { "id": 1449, "nome": "Solânea" }, { "id": 1451, "nome": "Sossêgo" }, { "id": 1452, "nome": "Sousa" }, { "id": 1453, "nome": "Sumé" }, { "id": 1418, "nome": "São Bentinho" }, { "id": 1419, "nome": "São Bento" }, { "id": 1420, "nome": "São Domingos" }, { "id": 1421, "nome": "São Domingos do Cariri" }, { "id": 1422, "nome": "São Francisco" }, { "id": 1426, "nome": "São José da Lagoa Tapada" }, { "id": 1427, "nome": "São José de Caiana" }, { "id": 1428, "nome": "São José de Espinharas" }, { "id": 1429, "nome": "São José de Piranhas" }, { "id": 1430, "nome": "São José de Princesa" }, { "id": 1431, "nome": "São José do Bonfim" }, { "id": 1432, "nome": "São José do Brejo do Cruz" }, { "id": 1433, "nome": "São José do Sabugi" }, { "id": 1434, "nome": "São José dos Cordeiros" }, { "id": 1435, "nome": "São José dos Ramos" }, { "id": 1423, "nome": "São João do Cariri" }, { "id": 1424, "nome": "São João do Rio do Peixe" }, { "id": 1425, "nome": "São João do Tigre" }, { "id": 1436, "nome": "São Mamede" }, { "id": 1437, "nome": "São Miguel de Taipu" }, { "id": 1438, "nome": "São Sebastião de Lagoa de Roça" }, { "id": 1439, "nome": "São Sebastião do Umbuzeiro" }, { "id": 1440, "nome": "São Vicente do Seridó" }, { "id": 1454, "nome": "Tacima" }, { "id": 1455, "nome": "Taperoá" }, { "id": 1456, "nome": "Tavares" }, { "id": 1457, "nome": "Teixeira" }, { "id": 1458, "nome": "Tenório" }, { "id": 1459, "nome": "Triunfo" }, { "id": 1460, "nome": "Uiraúna" }, { "id": 1461, "nome": "Umbuzeiro" }, { "id": 1463, "nome": "Vieirópolis" }, { "id": 1464, "nome": "Vista Serrana" }, { "id": 1462, "nome": "Várzea" }, { "id": 1465, "nome": "Zabelê" }, { "id": 1243, "nome": "Água Branca" }];
 
-            <div class="quick-cities">
-                <span class="quick-cities-title">Atalhos rápidos:</span>
-                <button class="city-chip" data-city="João Pessoa">João Pessoa</button>
-                <button class="city-chip" data-city="Campina Grande">Campina Grande</button>
-                <button class="city-chip" data-city="Patos">Patos</button>
-                <button class="city-chip" data-city="Santa Rita">Santa Rita</button>
-                <button class="city-chip" data-city="Cabedelo">Cabedelo</button>
-                <button class="city-chip" data-city="Sousa">Sousa</button>
-                <button class="city-chip" data-city="Cajazeiras">Cajazeiras</button>
-                <button class="city-chip" data-city="Guarabira">Guarabira</button>
-            </div>
-        </div>
+    const delegaciasLocaisData = [
+      {id:"1ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Av. Cruz das Armas, s/n, Cruz das Armas, João Pessoa - PB",telefone:"(83) 3218-4865 / (83) 3233-3363",bairros:["Cruz das Armas","Oitizeiro","Cristo Redentor","Varjão","Jardim Botânico Benjamim Maranhão"],lat:-7.1402,lon:-34.8891},
+      {id:"2ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Av. Dom Pedro II, 867, Centro, João Pessoa - PB",telefone:"(83) 3218-5350 / (83) 3218-5351",bairros:["Centro","Tambiá","Varadouro","Trincheiras","Jaguaribe","Ilha do Bispo","Alto do Mateus","Mandacaru","Alto do Céu","Róger","Padre Zé","Treze de Maio","Ipês","Área de Preservação Permanente"],lat:-7.1189,lon:-34.8765},
+      {id:"3ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Av. Acre, 530, Bairro dos Estados, João Pessoa - PB",telefone:"(83) 3244-0480 / (83) 3218-5352",bairros:["Castelo Branco","Torre","Expedicionários","Estados","Bairro dos Estados","Pedro Gondim","Tambauzinho"],lat:-7.1145,lon:-34.8621},
+      {id:"4ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Rua Cel. Eduardo Costa, s/n, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3218-5353",bairros:["Cidade dos Colibris","José Américo","Água Fria","Cuiá","Ernesto Geisel","João Paulo II","Gramame","Grotão","Funcionários","Costa e Silva","Ernani Sátiro"],obs:"Nota: Colinas do Sul está inserida no bairro oficial Gramame.",lat:-7.1685,lon:-34.8610},
+      {id:"8ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Av. Parque, s/n, Distrito Industrial, João Pessoa - PB",telefone:"(83) 3218-5357",bairros:["Distrito Industrial","Indústrias","Jardim Veneza","Mumbaba","Mussuré"],lat:-7.1720,lon:-34.8980},
+      {id:"9ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Rua Josefa Taveira, s/n, Mangabeira, João Pessoa - PB",telefone:"(83) 3218-5359",bairros:["Mangabeira","Costa do Sol","Bancários","Jardim São Paulo","Anatólia","Jardim Cidade Universitária","Portal do Sol","Ponta do Seixas","Penha"],obs:"Nota: Jacarapé está inserida no bairro oficial Costa do Sol.",lat:-7.1610,lon:-34.8350},
+      {id:"10ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Av. Nego, 820, Tambaú, João Pessoa - PB",telefone:"(83) 3214-8024",bairros:["Tambaú","Cabo Branco","Altiplano Cabo Branco","Miramar"],lat:-7.113583,lon:-34.829389},
+      {id:"11ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Av. Emília Mendonça Gomes, s/n, Valentina de Figueiredo, João Pessoa - PB",telefone:"(83) 3218-5961 / (83) 3218-5361",bairros:["Planalto da Boa Esperança","Valentina","Paratibe","Muçumagro","Barra de Gramame"],lat:-7.1890,lon:-34.8420},
+      {id:"12ª Delegacia Distrital da Capital",cidade:"João Pessoa",endereco:"Rua Manoel Arruda Cavalcante, s/n, Manaíra, João Pessoa - PB",telefone:"(83) 3246-9546 / (83) 3218-5362",bairros:["Manaíra","São José","Bessa","Aeroclube","Jardim Oceania","João Agripino","Brisamar"],lat:-7.0980,lon:-34.8390},
+      {id:"DEAM - Delegacia Especializada da Mulher da Capital",cidade:"João Pessoa",endereco:"Av. Maximiano Figueiredo, 499, Centro, João Pessoa - PB",telefone:"(83) 3218-5321",bairros:["Centro","Todos os bairros de João Pessoa"],lat:-7.1215,lon:-34.8750},
+      {id:"10ª Delegacia Seccional de Polícia Civil - Campina Grande",cidade:"Campina Grande",endereco:"Av. Raimundo Alves da Silva, s/n, Catolé, Campina Grande - PB",telefone:"(83) 3310-9300 / (83) 3310-9305",bairros:["Catolé","Centro","Jardim Tavares","Malvinas","São José","Prata","Alto Branco","Bodocongó","Cruzeiro","Liberdade","Três Irmãs","Santa Rosa"],cidadesAtendidas:["Campina Grande","Lagoa Seca","Massaranduba","Puxinanã","Fagundes"],lat:-7.2306,lon:-35.8811},
+      {id:"15ª Delegacia Seccional de Polícia Civil - Patos",cidade:"Patos",endereco:"Rua Elias Asfora, s/n, Jardim Guanabara, Patos - PB",telefone:"(83) 3423-3635 / (83) 3423-3630",bairros:["Jardim Guanabara","Centro","Brasília","Belo Horizonte","São Sebastião","Jatobá"],cidadesAtendidas:["Patos","Santa Teresinha","São José do Bonfim","Cacimba de Areia","Quixaba","Passagem","Salgadinho","Areia de Baraúnas","Teixeira","Desterro","Cacimbas","Maturéia","Manaíra","Santa Luzia","São José do Sabugi","Várzea","Junco do Seridó","Tenório"],lat:-7.0275,lon:-37.2810},
+      {id:"19ª Delegacia Seccional de Polícia Civil - Sousa",cidade:"Sousa",endereco:"Rua Deputado José de Paiva Gadelha, s/n, Areia, Sousa - PB",telefone:"(83) 3522-1789 / (83) 3522-2615",bairros:["Areia","Centro","Gatos","Estação","Alto do Cruzeiro","Angelim"],cidadesAtendidas:["Sousa","Aparecida","Marizópolis","Vieirópolis","Nazarezinho","São Francisco","São José da Lagoa Tapada","Santa Cruz","Lastro","Pombal","Condado","São Domingos","São Bentinho","Cajazeirinhas"],lat:-6.7622,lon:-38.2285},
+      {id:"20ª Delegacia Seccional de Polícia Civil - Cajazeiras",cidade:"Cajazeiras",endereco:"Av. Comandante Vital Rolim, 1500, Centro, Cajazeiras - PB",telefone:"(83) 3531-2948 / (83) 3531-2950",bairros:["Centro","Jaguaribe","Tebas","Esperança","Capoeiras"],cidadesAtendidas:["Cajazeiras","Cachoeira dos Índios","Bom Jesus","Santa Helena","São João do Rio do Peixe","Uiraúna","Poço Dantas","Poço de José de Moura","Triunfo","Joca Claudino","Bernardino Batista","São José de Piranhas","Monte Horebe","Carrapateira"],lat:-6.8885,lon:-38.5580},
+      {id:"8ª Delegacia Seccional de Polícia Civil - Guarabira",cidade:"Guarabira",endereco:"Rua Desembargador Pedro Bandeira, s/n, Centro, Guarabira - PB",telefone:"(83) 3271-1197 / (83) 3271-2900",bairros:["Centro","Cachoeira","Cordeiro","Nordeste","Primavera","São José"],cidadesAtendidas:["Guarabira","Pirpirituba","Pilões","Cuitegi","Alagoinha","Mulungu","Araçagi","Sertãozinho","Duas Estradas","Lagoa de Dentro","Serra da Raiz","Belém","Dona Inês","Bananeiras","Solânea","Serraria","Borborema"],lat:-6.8530,lon:-35.4900},
+      {id:"5ª Delegacia Seccional de Polícia Civil - Santa Rita",cidade:"Santa Rita",endereco:"Rua Juarez Távora, s/n, Centro, Santa Rita - PB",telefone:"(83) 3229-3426 / (83) 3229-3500",bairros:["Centro","Jardim Miritânia","Tibiri","Tibiri II","Várzea Nova","Marcos Moura"],cidadesAtendidas:["Santa Rita","Cruz do Espírito Santo","Sobrado"],lat:-7.1130,lon:-34.9780},
+      {id:"3ª Delegacia Seccional de Polícia Civil - Cabedelo",cidade:"Cabedelo",endereco:"Rua Pastor José Alves de Oliveira, s/n, Centro, Cabedelo - PB",telefone:"(83) 3228-6141 / (83) 3228-6140",bairros:["Centro","Ponta de Matos","Intermares","Poço","Formosa","Renascer"],cidadesAtendidas:["Cabedelo","Lucena"],lat:-6.9810,lon:-34.8340},
+      {id:"4ª Delegacia Seccional de Polícia Civil - Bayeux",cidade:"Bayeux",endereco:"Av. Liberdade, s/n, Centro, Bayeux - PB",telefone:"(83) 3253-2000 / (83) 3253-2001",bairros:["Centro","Alto da Boa Vista","Jardim Mário Andreazza","Tambay","Mário Andreazza","Sesi"],cidadesAtendidas:["Bayeux"],lat:-7.1250,lon:-34.9320},
+      {id:"6ª Delegacia Seccional de Polícia Civil - Alhandra",cidade:"Alhandra",endereco:"Rua Presidente João Pessoa, s/n, Centro, Alhandra - PB",telefone:"(83) 3256-1172",bairros:["Centro","Nossa Senhora dos Salgados"],cidadesAtendidas:["Alhandra","Conde","Pitimbu","Caaporã","Pedras de Fogo"],lat:-7.4360,lon:-34.9080},
+      {id:"7ª Delegacia Seccional de Polícia Civil - Mamanguape",cidade:"Mamanguape",endereco:"Rua Senador João da Mata, s/n, Centro, Mamanguape - PB",telefone:"(83) 3292-1900",bairros:["Centro","Gurguri","Areial"],cidadesAtendidas:["Mamanguape","Rio Tinto","Baía da Traição","Marcação","Mataraca","Jacaraú","Pedro Régis","Curral de Cima","Capim","Itapororoca","Cuité de Mamanguape"],lat:-6.8390,lon:-35.1260},
+      {id:"11ª Delegacia Seccional de Polícia Civil - Queimadas",cidade:"Queimadas",endereco:"Rua César Ribeiro, s/n, Centro, Queimadas - PB",telefone:"(83) 3392-1034",bairros:["Centro","Castelo Branco"],cidadesAtendidas:["Queimadas","Aroeiras","Gado Bravo","Umbuzeiro","Natuba","Santa Cecília","Barra de Santana","Boqueirão","Caturité","Riacho de Santo Antônio","Barra de São Miguel","Cabaceiras"],lat:-7.3580,lon:-35.8990},
+      {id:"12ª Delegacia Seccional de Polícia Civil - Esperança",cidade:"Esperança",endereco:"Rua Solón de Lucena, s/n, Centro, Esperança - PB",telefone:"(83) 3361-2385",bairros:["Centro","Beira Rio"],cidadesAtendidas:["Esperança","Areial","Montadas","Remígio","Algodão de Jandaíra","Arara","São Sebastião de Lagoa de Roça"],lat:-7.0250,lon:-35.8560},
+      {id:"13ª Delegacia Seccional de Polícia Civil - Picuí",cidade:"Picuí",endereco:"Rua Cel. José Maria, s/n, Centro, Picuí - PB",telefone:"(83) 3371-2324",bairros:["Centro","Limeira"],cidadesAtendidas:["Picuí","Cuité","Nova Floresta","Baraúna","Frei Martinho","Nova Palmeira","Pedra Lavrada","Sossêgo","Cubati"],lat:-6.5110,lon:-36.3470},
+      {id:"14ª Delegacia Seccional de Polícia Civil - Monteiro",cidade:"Monteiro",endereco:"Rua Epaminondas Mendonça, s/n, Centro, Monteiro - PB",telefone:"(83) 3351-2147",bairros:["Centro","Alto de São Vicente"],cidadesAtendidas:["Monteiro","Sumé","Zabelê","Ouro Velho","Prata","Amparo","Camalaú","Congo","Coxixola","São João do Cariri","São José dos Cordeiros","Parari","Gurjão","Santo André","Serra Branca"],lat:-7.8890,lon:-37.1210},
+      {id:"16ª Delegacia Seccional de Polícia Civil - Princesa Isabel",cidade:"Princesa Isabel",endereco:"Rua Arrojado Lisboa, s/n, Centro, Princesa Isabel - PB",telefone:"(83) 3457-2000",bairros:["Centro","Maia"],cidadesAtendidas:["Princesa Isabel","Tavares","Juru","Água Branca","Imaculada","São José de Princesa"],lat:-7.7340,lon:-37.9940},
+      {id:"17ª Delegacia Seccional de Polícia Civil - Itaporanga",cidade:"Itaporanga",endereco:"Rua 9 de Julho, s/n, Centro, Itaporanga - PB",telefone:"(83) 3451-2219",bairros:["Centro","Alto das Neves"],cidadesAtendidas:["Itaporanga","Piancó","Olho d'Água","Emas","Catingueira","Igaracy","Aguiar","Boa Ventura","Coremas","Diamante","Ibiara","Santana de Mangueira","Santa Inês","Conceição","Bonito de Santa Fé","Serra Grande","São José de Caiana","Nova Olinda","Pedra Branca","Santana dos Garrotes"],lat:-7.3040,lon:-38.1510},
+      {id:"18ª Delegacia Seccional de Polícia Civil - Catolé do Rocha",cidade:"Catolé do Rocha",endereco:"Rua Américo Hermógenes, s/n, Centro, Catolé do Rocha - PB",telefone:"(83) 3441-1847",bairros:["Centro","Loteamento Luzia Maia"],cidadesAtendidas:["Catolé do Rocha","Brejo do Cruz","Belém do Brejo do Cruz","São José do Brejo do Cruz","Riacho dos Cavalos","Mato Grosso","Jericó","Lagoa","Paulista","São Bento"],lat:-6.3440,lon:-37.7470}
+    ];
 
-        <div id="results-container" class="results-container">
-            <!-- Cards de resultado -->
-        </div>
-    </main>
+    const especializadasData = [
+      {nome:"Delegacia-Geral da Polícia Civil da Paraíba - DEGEPOL",sigla:"DEGEPOL",cidade:"João Pessoa",funcao:"Planejamento, supervisão, coordenação, controle e fiscalização das funções da Polícia Civil da Paraíba, além da direção administrativa e estratégica da instituição.",endereco:"Av. Gen. Edson Ramalho, 695, Manaíra, João Pessoa - PB",telefone:"(83) 3213-9017",mapUrl:"https://share.google/YLr0r5LVHxEmcluKj"},
+      {nome:"Delegacia de Homicídios e Proteção à Pessoa - DHPP",sigla:"DHPP",cidade:"João Pessoa",funcao:"Investigação de homicídios e demais crimes dolosos contra a vida inseridos em sua atribuição especializada.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9169"},
+      {nome:"Delegacia Especializada de Roubos e Furtos - DRF",sigla:"DRF",cidade:"João Pessoa",funcao:"Investigação e repressão qualificada de roubos e furtos, especialmente ocorrências de maior gravidade ou organização.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9161"},
+      {nome:"Delegacia de Defraudações e Falsificações - DDF",sigla:"DDF",cidade:"João Pessoa",funcao:"Apuração de fraudes, estelionatos complexos, falsificações e delitos documentais ou patrimoniais correlatos.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9175"},
+      {nome:"Delegacia Especializada em Crimes Cibernéticos - DECC",sigla:"DECC",cidade:"João Pessoa",funcao:"Investigação de infrações praticadas por meio da internet, sistemas informatizados, dispositivos e recursos tecnológicos.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9190"},
+      {nome:"Departamento de Repressão e Combate ao Crime Organizado - DRACCO",sigla:"DRACCO",cidade:"João Pessoa",funcao:"Estrutura integrada de repressão qualificada ao crime organizado, à qual estão subordinados DRACO, GOE, DREs e DESARME, com o GOC subordinado ao GOE.",endereco:"Avenida Senador Ruy Carneiro, 904, Miramar, João Pessoa - PB",telefone:"Disque 197",mapUrl:"https://share.google/lTNm1M34yrrfiaXAz"},
+      {nome:"Delegacia de Roubos e Furtos de Veículos e Cargas - DRFVC",sigla:"DRFVC",cidade:"João Pessoa",funcao:"Apuração de roubo e furto de veículos e cargas, receptação, adulteração identificadora e esquemas de comercialização ilícita.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9178"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM (Zona Sul)",sigla:"DEAM",cidade:"João Pessoa",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9164"},
+      {nome:"Delegacia Especializada de Atendimento ao Idoso - DEATI",sigla:"DEATI",cidade:"João Pessoa",funcao:"Investigação de violência, maus-tratos, abandono, apropriação patrimonial, fraudes e demais crimes contra pessoas idosas.",endereco:"Rua Avelino Cunha, 230, Tambiá, João Pessoa - PB",telefone:"(83) 98795-3838"},
+      {nome:"Delegacia de Repressão aos Crimes Homofóbicos, Étnico-Raciais e Delitos de Intolerância Religiosa - DECHRADI",sigla:"DECHRADI",cidade:"João Pessoa",funcao:"Investigação de crimes motivados por LGBTfobia, racismo, discriminação étnico-racial e intolerância religiosa.",endereco:"Rua Avelino Cunha, 230, Tambiá, João Pessoa - PB",telefone:"(83) 3213-9029"},
+      {nome:"Delegacia Especializada da Infância e Juventude - DIJ",sigla:"DIJ",cidade:"João Pessoa",funcao:"Atuação de polícia judiciária em procedimentos relativos a atos infracionais atribuídos a adolescentes.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9180"},
+      {nome:"Delegacia de Repressão aos Crimes contra a Infância e Juventude - DRCCIJ",sigla:"DRCCIJ",cidade:"João Pessoa",funcao:"Investigação de crimes praticados contra crianças e adolescentes, inclusive violência sexual e maus-tratos.",endereco:"Rua João Amorim, 233, Centro, João Pessoa - PB",telefone:"(83) 3214-3255 / (83) 3218-5346"},
+      {nome:"Delegacia Especializada de Atendimento ao Turista - DEATUR",sigla:"DEATUR",cidade:"João Pessoa",funcao:"Atendimento, orientação e apuração de infrações penais em que turistas figurem como vítimas, conforme a atribuição da unidade.",endereco:"Rua Manoel Medeiros Guedes, 41, Manaíra, João Pessoa - PB",telefone:"(83) 3214-8022"},
+      {nome:"Delegacia de Crimes contra o Meio Ambiente",sigla:"MEIO AMBIENTE",cidade:"João Pessoa",funcao:"Investigação de crimes ambientais, incluindo ilícitos contra fauna, flora, recursos naturais e poluição.",endereco:"Rua Manoel Rufino da Silva, 500, Ernesto Geisel, João Pessoa - PB",telefone:"(83) 3264-9166"},
+      {nome:"DECON (Delegacia do Consumidor)",sigla:"DECON",cidade:"João Pessoa",funcao:"Investigação de crimes contra as relações de consumo e demais ilícitos penais correlatos.",endereco:"Av. Marcionila da Conceição, 1385, Cabo Branco, João Pessoa - PB",telefone:"(83) 3214-8200"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM",sigla:"DEAM",cidade:"Campina Grande",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Rua Raimundo Nonato de Araújo, s/n, Catolé, Campina Grande - PB",telefone:"(83) 3310-9343 / (83) 3310-9310"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM",sigla:"DEAM",cidade:"Bayeux",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Av. Doutor Pedro Ulisses, 211, Centro, Bayeux - PB",telefone:"(83) 3232-3339"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM",sigla:"DEAM",cidade:"Cabedelo",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Rua Pastor José Alves de Oliveira, 357, Centro, Cabedelo - PB",telefone:"(83) 3228-6349"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM",sigla:"DEAM",cidade:"Santa Rita",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Rua Maura Dias Ramos, s/n, Jardim Miritânia, Santa Rita - PB",telefone:"(83) 3229-8738"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM",sigla:"DEAM",cidade:"Mamanguape",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Rua Escritor Oscar Pinto, 18, Campo, Mamanguape - PB",telefone:"(83) 3292-2604"},
+      {nome:"Delegacia Especializada de Atendimento à Mulher - DEAM",sigla:"DEAM",cidade:"Guarabira",funcao:"Atendimento e investigação de violência doméstica e familiar contra a mulher e demais crimes abrangidos pela especialização.",endereco:"Travessa Ledônio Rodrigues de Bulhões, s/n, Cordeiro, Guarabira - PB",telefone:"(83) 3271-2986"}
+    ];
 
-    <footer>
-        <p>Localizador de Delegacias PB - WinZip144 &copy; 2026</p>
-        <p style="margin-top: 0.3rem;">Sistema não oficial de consulta rápida baseado no portal <a
-                href="https://delegaciaonline.pc.pb.gov.br/localizar-delegacias" target="_blank"
-                style="color: #ffffff; font-weight: 600;">Delegacia Online PB</a>.</p>
-    </footer>
+    const sinonimos={"jacarape":{oficial:"Costa do Sol",cidade:"João Pessoa"},"colinas do sul":{oficial:"Gramame",cidade:"João Pessoa"},"intermares":{oficial:"Intermares",cidade:"Cabedelo"},"tibiri":{oficial:"Tibiri",cidade:"Santa Rita"},"catole":{oficial:"Catolé",cidade:"Campina Grande"},"bodocongo":{oficial:"Bodocongó",cidade:"Campina Grande"}};
+    const cidadeSelect=document.getElementById('cidade-select'),bairroSelect=document.getElementById('bairro-select'),searchInput=document.getElementById('search-input'),suggestionsBox=document.getElementById('suggestions'),resultsContainer=document.getElementById('results-container'),quickCitySelect=document.getElementById('quick-city-select');
+    const specializedSearch=document.getElementById('specialized-search'),specializedResults=document.getElementById('specialized-results');
+    const API_BASE="https://api-sgpp-gedes.rke.codataprd.pb.gov.br/api/v1";
 
-    <script>
-        // Função auxiliar para normalizar texto (Remove acentos, caracteres especiais e converte para minúsculas)
-        function normalizeText(text) {
-            if (!text) return "";
-            return text
-                .toString()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .trim();
-        }
+    function initCidades(){cidadeSelect.innerHTML='<option value="">-- Escolha uma cidade (223 disponíveis) --</option>';municipiosData.forEach(m=>{const o=document.createElement('option');o.value=m.nome;o.dataset.id=m.id;o.textContent=m.nome;cidadeSelect.appendChild(o)})}
+    async function carregarBairros(cidadeNome){bairroSelect.innerHTML='<option value="">-- Carregando bairros... --</option>';bairroSelect.disabled=true;const mun=municipiosData.find(m=>normalizeText(m.nome)===normalizeText(cidadeNome));let bairros=[];if(mun){try{const r=await fetch(`${API_BASE}/consulta/bairros?municipio=${mun.id}`);if(r.ok)bairros=await r.json()}catch(e){console.warn('API de bairros indisponível, usando lista local:',e)}}if(!bairros||!bairros.length){const set=new Set();delegaciasLocaisData.filter(d=>normalizeText(d.cidade)===normalizeText(cidadeNome)).forEach(d=>(d.bairros||[]).forEach(b=>set.add(b)));bairros=[...set]}if(bairros.length){bairroSelect.innerHTML='<option value="">-- Todos os Bairros --</option>';bairros.sort((a,b)=>normalizeText(a).localeCompare(normalizeText(b))).forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;bairroSelect.appendChild(o)});bairroSelect.disabled=false}else{bairroSelect.innerHTML='<option value="">-- Nenhum bairro específico cadastrado --</option>';bairroSelect.disabled=true}}
+    async function buscarDelegacias(cidade,bairro=""){resultsContainer.innerHTML='<div class="no-results">Buscando delegacias...</div>';let lista=[],live=false;if(cidade){try{let url=`${API_BASE}/consulta/lista-delegacias?municipio=${encodeURIComponent(cidade)}&limit=100`;if(bairro)url+=`&bairro=${encodeURIComponent(bairro)}`;const r=await fetch(url);if(r.ok){const data=await r.json();if(data&&data.itens&&data.itens.length){lista=data.itens.map(i=>({id:i.nomeUnidade,cidade,endereco:i.endereco||"Endereço não informado",bairro:i.bairro||bairro||cidade,telefone:i.telefone||"Disque 197",lat:i.latitude,lon:i.longitude,isLive:true}));live=true}}}catch(e){console.warn('API de delegacias offline, usando dados locais:',e)}if(!lista.length){const cn=normalizeText(cidade);let corr=delegaciasLocaisData.filter(d=>normalizeText(d.cidade)===cn);if(bairro&&corr.length){const bn=normalizeText(bairro),f=corr.filter(d=>(d.bairros||[]).some(b=>normalizeText(b)===bn));if(f.length)corr=f}if(!corr.length)corr=delegaciasLocaisData.filter(d=>(d.cidadesAtendidas||[]).some(c=>normalizeText(c)===cn));lista=corr}}renderizarResultados(lista,cidade,bairro,live)}
+    function renderizarResultados(lista,cidadeFiltro,bairroFiltro,isLiveApi=false){resultsContainer.innerHTML='';if(!lista||!lista.length){resultsContainer.innerHTML=`<div class="no-results"><h3>Nenhuma delegacia específica encontrada para "${cidadeFiltro||'esta consulta'}"</h3><p style="margin-top:.5rem;font-size:.86rem">Consulte a <a href="https://delegaciaonline.pc.pb.gov.br" target="_blank" style="color:#fff;font-weight:600">Delegacia Online PB</a> ou o Disque 197.</p></div>`;return}lista.forEach(d=>{const card=document.createElement('div');card.className='result-card';const q=encodeURIComponent(`${d.id} ${d.endereco} ${d.cidade||cidadeFiltro||''}`),maps=(d.lat&&d.lon)?`https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lon}`:`https://www.google.com/maps/search/?api=1&query=${q}`,badge=(isLiveApi||d.isLive)?'<span class="status-tag status-live">Ao Vivo (PCPB)</span>':'<span class="status-tag status-cached">Base local</span>',tel=d.telefone||"(83) 3218-5300",raw=tel.replace(/[^0-9]/g,'');card.innerHTML=`<div class="result-header"><div class="result-title-group"><h3>${d.id} ${badge}</h3><div class="result-subtitle">Circunscrição: ${d.cidade||cidadeFiltro} / PB</div></div><a href="${maps}" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Ver no Google Maps</a></div><div class="info-grid"><div class="info-group"><strong>Município:</strong><span>${d.cidade||cidadeFiltro}</span></div>${d.bairro?`<div class="info-group"><strong>Bairro / Região:</strong><span>${d.bairro}</span></div>`:''}<div class="info-group"><strong>Endereço:</strong><span>${d.endereco}</span></div><div class="info-group"><strong>Telefone:</strong><a href="tel:${raw}" class="tel-link">${tel}</a></div></div>${d.obs?`<div class="obs-text">${d.obs}</div>`:''}`;resultsContainer.appendChild(card)})}
 
-        // Exibir PopUp Modal ao abrir a página
-        window.addEventListener('DOMContentLoaded', () => {
-            const popupModal = document.getElementById('popup-modal');
-            const closeBtn = document.getElementById('modal-close-btn');
+    cidadeSelect.addEventListener('change',function(){const c=this.value;if(c){carregarBairros(c);buscarDelegacias(c,'')}else{bairroSelect.innerHTML='<option value="">-- Todos os Bairros / Selecione a Cidade --</option>';bairroSelect.disabled=true;resultsContainer.innerHTML=''}});
+    bairroSelect.addEventListener('change',function(){if(cidadeSelect.value)buscarDelegacias(cidadeSelect.value,this.value)});
+    quickCitySelect.addEventListener('change',function(){if(!this.value)return;cidadeSelect.value=this.value;cidadeSelect.dispatchEvent(new Event('change'));this.value=''});
 
-            if (popupModal) {
-                popupModal.classList.add('active');
-            }
+    searchInput.addEventListener('input',function(){const q=normalizeText(this.value);suggestionsBox.innerHTML='';if(q.length<2){suggestionsBox.style.display='none';return}const matches=[];municipiosData.forEach(m=>{if(normalizeText(m.nome).includes(q))matches.push({text:m.nome,type:'Cidade',cidade:m.nome,bairro:''})});delegaciasLocaisData.forEach(d=>{if(normalizeText(d.id).includes(q))matches.push({text:d.id,type:'Delegacia',cidade:d.cidade,bairro:''});(d.bairros||[]).forEach(b=>{if(normalizeText(b).includes(q))matches.push({text:`${b} (${d.cidade})`,type:'Bairro',cidade:d.cidade,bairro:b})})});Object.keys(sinonimos).forEach(k=>{if(normalizeText(k).includes(q)){const i=sinonimos[k];matches.push({text:`${k.toUpperCase()} (Comunidade em ${i.oficial})`,type:'Comunidade',cidade:i.cidade,bairro:i.oficial})}});const limited=matches.slice(0,8);if(limited.length){suggestionsBox.style.display='block';limited.forEach(i=>{const d=document.createElement('div');d.className='suggestion-item';d.innerHTML=`<span>${i.text}</span><span class="suggestion-tag">${i.type}</span>`;d.addEventListener('click',()=>{searchInput.value=i.text;suggestionsBox.style.display='none';cidadeSelect.value=i.cidade;carregarBairros(i.cidade).then(()=>{if(i.bairro)bairroSelect.value=i.bairro;buscarDelegacias(i.cidade,i.bairro)})});suggestionsBox.appendChild(d)})}else suggestionsBox.style.display='none'});
+    document.addEventListener('click',e=>{if(!e.target.closest('.relative-wrapper'))suggestionsBox.style.display='none'});
 
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    popupModal.classList.remove('active');
-                });
-            }
-        });
+    function initEspecializadas(){
+      const tipos=new Map();
+      especializadasData.forEach(d=>{if(!tipos.has(d.sigla))tipos.set(d.sigla,d.nome)});
+      [...tipos.entries()].sort((a,b)=>a[1].localeCompare(b[1],'pt-BR')).forEach(([sigla,nome])=>{
+        const o=document.createElement('option');o.value=sigla;o.textContent=nome;specializedSearch.appendChild(o)
+      });
+    }
+    function renderEspecializadas(){
+      const tipo=specializedSearch.value;
+      if(!tipo){specializedResults.innerHTML='';return}
+      const filtered=especializadasData.filter(d=>d.sigla===tipo);
+      specializedResults.innerHTML='';
+      if(!filtered.length){specializedResults.innerHTML='<div class="no-results">Nenhuma especializada encontrada.</div>';return}
+      filtered.forEach(d=>{const c=document.createElement('div');c.className='specialized-card';const telRaw=d.telefone.replace(/[^0-9]/g,''),map=d.mapUrl||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.endereco)}`;c.innerHTML=`<h3>${d.nome}</h3><div class="meta">${d.cidade} / PB</div><div class="purpose">${d.funcao}</div><div class="contact-line"><strong>Endereço:</strong><span>${d.endereco}</span></div><div class="contact-line"><strong>Telefone:</strong><a class="tel-link" href="tel:${telRaw}">${d.telefone}</a></div><div class="actions"><a href="${map}" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Ver no Google Maps</a></div>`;specializedResults.appendChild(c)})
+    }
+    specializedSearch.addEventListener('change',renderEspecializadas);
 
-        // Lista completa dos 223 municípios da Paraíba (com iniciais maiúsculas formatadas)
-        const municipiosData = [{ "id": 1244, "nome": "Aguiar" }, { "id": 1245, "nome": "Alagoa Grande" }, { "id": 1246, "nome": "Alagoa Nova" }, { "id": 1247, "nome": "Alagoinha" }, { "id": 1248, "nome": "Alcantil" }, { "id": 1249, "nome": "Algodão de Jandaíra" }, { "id": 1250, "nome": "Alhandra" }, { "id": 1251, "nome": "Amparo" }, { "id": 1252, "nome": "Aparecida" }, { "id": 1254, "nome": "Arara" }, { "id": 1255, "nome": "Araruna" }, { "id": 1253, "nome": "Araçagi" }, { "id": 1256, "nome": "Areia" }, { "id": 1257, "nome": "Areia de Baraúnas" }, { "id": 1258, "nome": "Areial" }, { "id": 1259, "nome": "Aroeiras" }, { "id": 1260, "nome": "Assunção" }, { "id": 1262, "nome": "Bananeiras" }, { "id": 1263, "nome": "Baraúna" }, { "id": 1264, "nome": "Barra de Santa Rosa" }, { "id": 1265, "nome": "Barra de Santana" }, { "id": 1266, "nome": "Barra de São Miguel" }, { "id": 1267, "nome": "Bayeux" }, { "id": 1261, "nome": "Baía da Traição" }, { "id": 1268, "nome": "Belém" }, { "id": 1269, "nome": "Belém do Brejo do Cruz" }, { "id": 1270, "nome": "Bernardino Batista" }, { "id": 1271, "nome": "Boa Ventura" }, { "id": 1272, "nome": "Boa Vista" }, { "id": 1273, "nome": "Bom Jesus" }, { "id": 1274, "nome": "Bom Sucesso" }, { "id": 1275, "nome": "Bonito de Santa Fé" }, { "id": 1276, "nome": "Boqueirão" }, { "id": 1277, "nome": "Borborema" }, { "id": 1278, "nome": "Brejo do Cruz" }, { "id": 1279, "nome": "Brejo dos Santos" }, { "id": 1280, "nome": "Caaporã" }, { "id": 1281, "nome": "Cabaceiras" }, { "id": 1282, "nome": "Cabedelo" }, { "id": 1283, "nome": "Cachoeira dos Índios" }, { "id": 1284, "nome": "Cacimba de Areia" }, { "id": 1285, "nome": "Cacimba de Dentro" }, { "id": 1286, "nome": "Cacimbas" }, { "id": 1287, "nome": "Caiçara" }, { "id": 1288, "nome": "Cajazeiras" }, { "id": 1289, "nome": "Cajazeirinhas" }, { "id": 1290, "nome": "Caldas Brandão" }, { "id": 1291, "nome": "Camalaú" }, { "id": 1292, "nome": "Campina Grande" }, { "id": 1293, "nome": "Capim" }, { "id": 1294, "nome": "Caraúbas" }, { "id": 1295, "nome": "Carrapateira" }, { "id": 1296, "nome": "Casserengue" }, { "id": 1297, "nome": "Catingueira" }, { "id": 1298, "nome": "Catolé do Rocha" }, { "id": 1299, "nome": "Caturité" }, { "id": 1300, "nome": "Conceição" }, { "id": 1301, "nome": "Condado" }, { "id": 1302, "nome": "Conde" }, { "id": 1303, "nome": "Congo" }, { "id": 1304, "nome": "Coremas" }, { "id": 1305, "nome": "Coxixola" }, { "id": 1306, "nome": "Cruz do Espírito Santo" }, { "id": 1307, "nome": "Cubati" }, { "id": 1310, "nome": "Cuitegi" }, { "id": 1308, "nome": "Cuité" }, { "id": 1309, "nome": "Cuité de Mamanguape" }, { "id": 1311, "nome": "Curral de Cima" }, { "id": 1312, "nome": "Curral Velho" }, { "id": 1313, "nome": "Damião" }, { "id": 1314, "nome": "Desterro" }, { "id": 1315, "nome": "Diamante" }, { "id": 1316, "nome": "Dona Inês" }, { "id": 1317, "nome": "Duas Estradas" }, { "id": 1318, "nome": "Emas" }, { "id": 1319, "nome": "Esperança" }, { "id": 1320, "nome": "Fagundes" }, { "id": 1321, "nome": "Frei Martinho" }, { "id": 1322, "nome": "Gado Bravo" }, { "id": 1323, "nome": "Guarabira" }, { "id": 1324, "nome": "Gurinhém" }, { "id": 1325, "nome": "Gurjão" }, { "id": 1326, "nome": "Ibiara" }, { "id": 1327, "nome": "Igaracy" }, { "id": 1328, "nome": "Imaculada" }, { "id": 1329, "nome": "Ingá" }, { "id": 1330, "nome": "Itabaiana" }, { "id": 1331, "nome": "Itaporanga" }, { "id": 1332, "nome": "Itapororoca" }, { "id": 1333, "nome": "Itatuba" }, { "id": 1334, "nome": "Jacaraú" }, { "id": 1335, "nome": "Jericó" }, { "id": 1337, "nome": "Joca Claudino" }, { "id": 1336, "nome": "João Pessoa" }, { "id": 1338, "nome": "Juarez Távora" }, { "id": 1339, "nome": "Juazeirinho" }, { "id": 1340, "nome": "Junco do Seridó" }, { "id": 1341, "nome": "Juripiranga" }, { "id": 1342, "nome": "Juru" }, { "id": 1343, "nome": "Lagoa" }, { "id": 1344, "nome": "Lagoa de Dentro" }, { "id": 1345, "nome": "Lagoa Seca" }, { "id": 1346, "nome": "Lastro" }, { "id": 1347, "nome": "Livramento" }, { "id": 1348, "nome": "Logradouro" }, { "id": 1349, "nome": "Lucena" }, { "id": 1351, "nome": "Malta" }, { "id": 1352, "nome": "Mamanguape" }, { "id": 1353, "nome": "Manaíra" }, { "id": 1354, "nome": "Marcação" }, { "id": 1355, "nome": "Mari" }, { "id": 1356, "nome": "Marizópolis" }, { "id": 1357, "nome": "Massaranduba" }, { "id": 1358, "nome": "Mataraca" }, { "id": 1359, "nome": "Matinhas" }, { "id": 1360, "nome": "Mato Grosso" }, { "id": 1361, "nome": "Maturéia" }, { "id": 1362, "nome": "Mogeiro" }, { "id": 1363, "nome": "Montadas" }, { "id": 1364, "nome": "Monte Horebe" }, { "id": 1365, "nome": "Monteiro" }, { "id": 1366, "nome": "Mulungu" }, { "id": 1350, "nome": "Mãe d'Água" }, { "id": 1367, "nome": "Natuba" }, { "id": 1368, "nome": "Nazarezinho" }, { "id": 1369, "nome": "Nova Floresta" }, { "id": 1370, "nome": "Nova Olinda" }, { "id": 1371, "nome": "Nova Palmeira" }, { "id": 1372, "nome": "Olho d'Água" }, { "id": 1373, "nome": "Olivedos" }, { "id": 1374, "nome": "Ouro Velho" }, { "id": 1375, "nome": "Parari" }, { "id": 1376, "nome": "Passagem" }, { "id": 1377, "nome": "Patos" }, { "id": 1378, "nome": "Paulista" }, { "id": 1379, "nome": "Pedra Branca" }, { "id": 1380, "nome": "Pedra Lavrada" }, { "id": 1381, "nome": "Pedras de Fogo" }, { "id": 1382, "nome": "Pedro Régis" }, { "id": 1383, "nome": "Piancó" }, { "id": 1384, "nome": "Picuí" }, { "id": 1385, "nome": "Pilar" }, { "id": 1386, "nome": "Pilões" }, { "id": 1387, "nome": "Pilõezinhos" }, { "id": 1388, "nome": "Pirpirituba" }, { "id": 1389, "nome": "Pitimbu" }, { "id": 1390, "nome": "Pocinhos" }, { "id": 1393, "nome": "Pombal" }, { "id": 1391, "nome": "Poço Dantas" }, { "id": 1392, "nome": "Poço de José de Moura" }, { "id": 1394, "nome": "Prata" }, { "id": 1395, "nome": "Princesa Isabel" }, { "id": 1396, "nome": "Puxinanã" }, { "id": 1397, "nome": "Queimadas" }, { "id": 1398, "nome": "Quixaba" }, { "id": 1399, "nome": "Remígio" }, { "id": 1403, "nome": "Riacho de Santo Antônio" }, { "id": 1404, "nome": "Riacho dos Cavalos" }, { "id": 1400, "nome": "Riachão" }, { "id": 1401, "nome": "Riachão do Bacamarte" }, { "id": 1402, "nome": "Riachão do Poço" }, { "id": 1405, "nome": "Rio Tinto" }, { "id": 1406, "nome": "Salgadinho" }, { "id": 1407, "nome": "Salgado de São Félix" }, { "id": 1408, "nome": "Santa Cecília" }, { "id": 1409, "nome": "Santa Cruz" }, { "id": 1410, "nome": "Santa Helena" }, { "id": 1411, "nome": "Santa Inês" }, { "id": 1412, "nome": "Santa Luzia" }, { "id": 1413, "nome": "Santa Rita" }, { "id": 1414, "nome": "Santa Teresinha" }, { "id": 1415, "nome": "Santana de Mangueira" }, { "id": 1416, "nome": "Santana dos Garrotes" }, { "id": 1417, "nome": "Santo André" }, { "id": 1441, "nome": "Sapé" }, { "id": 1442, "nome": "Serra Branca" }, { "id": 1443, "nome": "Serra da Raiz" }, { "id": 1444, "nome": "Serra Grande" }, { "id": 1445, "nome": "Serra Redonda" }, { "id": 1446, "nome": "Serraria" }, { "id": 1447, "nome": "Sertãozinho" }, { "id": 1448, "nome": "Sobrado" }, { "id": 1450, "nome": "Soledade" }, { "id": 1449, "nome": "Solânea" }, { "id": 1451, "nome": "Sossêgo" }, { "id": 1452, "nome": "Sousa" }, { "id": 1453, "nome": "Sumé" }, { "id": 1418, "nome": "São Bentinho" }, { "id": 1419, "nome": "São Bento" }, { "id": 1420, "nome": "São Domingos" }, { "id": 1421, "nome": "São Domingos do Cariri" }, { "id": 1422, "nome": "São Francisco" }, { "id": 1426, "nome": "São José da Lagoa Tapada" }, { "id": 1427, "nome": "São José de Caiana" }, { "id": 1428, "nome": "São José de Espinharas" }, { "id": 1429, "nome": "São José de Piranhas" }, { "id": 1430, "nome": "São José de Princesa" }, { "id": 1431, "nome": "São José do Bonfim" }, { "id": 1432, "nome": "São José do Brejo do Cruz" }, { "id": 1433, "nome": "São José do Sabugi" }, { "id": 1434, "nome": "São José dos Cordeiros" }, { "id": 1435, "nome": "São José dos Ramos" }, { "id": 1423, "nome": "São João do Cariri" }, { "id": 1424, "nome": "São João do Rio do Peixe" }, { "id": 1425, "nome": "São João do Tigre" }, { "id": 1436, "nome": "São Mamede" }, { "id": 1437, "nome": "São Miguel de Taipu" }, { "id": 1438, "nome": "São Sebastião de Lagoa de Roça" }, { "id": 1439, "nome": "São Sebastião do Umbuzeiro" }, { "id": 1440, "nome": "São Vicente do Seridó" }, { "id": 1454, "nome": "Tacima" }, { "id": 1455, "nome": "Taperoá" }, { "id": 1456, "nome": "Tavares" }, { "id": 1457, "nome": "Teixeira" }, { "id": 1458, "nome": "Tenório" }, { "id": 1459, "nome": "Triunfo" }, { "id": 1460, "nome": "Uiraúna" }, { "id": 1461, "nome": "Umbuzeiro" }, { "id": 1463, "nome": "Vieirópolis" }, { "id": 1464, "nome": "Vista Serrana" }, { "id": 1462, "nome": "Várzea" }, { "id": 1465, "nome": "Zabelê" }, { "id": 1243, "nome": "Água Branca" }];
-
-        // Mapeamento local completo de Delegacias Distritais e Seccionais da Paraíba
-        const delegaciasLocaisData = [
-            // JOÃO PESSOA - DISTRITAIS
-            {
-                id: "1ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Cruz das Armas, s/n, Cruz das Armas, João Pessoa - PB",
-                telefone: "(83) 3218-4865 / (83) 3233-3363",
-                bairros: ["Cruz das Armas", "Oitizeiro", "Cristo Redentor", "Varjão", "Jardim Botânico Benjamim Maranhão"],
-                lat: -7.1402, lon: -34.8891
-            },
-            {
-                id: "2ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Dom Pedro II, 867, Centro, João Pessoa - PB",
-                telefone: "(83) 3218-5350 / (83) 3218-5351",
-                bairros: ["Centro", "Tambiá", "Varadouro", "Trincheiras", "Jaguaribe", "Ilha do Bispo", "Alto do Mateus", "Mandacaru", "Alto do Céu", "Róger", "Padre Zé", "Treze de Maio", "Ipês", "Área de Preservação Permanente"],
-                lat: -7.1189, lon: -34.8765
-            },
-            {
-                id: "3ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Acre, 530, Bairro dos Estados, João Pessoa - PB",
-                telefone: "(83) 3244-0480 / (83) 3218-5352",
-                bairros: ["Castelo Branco", "Torre", "Expedicionários", "Estados", "Bairro dos Estados", "Pedro Gondim", "Tambauzinho"],
-                lat: -7.1145, lon: -34.8621
-            },
-            {
-                id: "4ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Rua Cel. Eduardo Costa, s/n, Ernesto Geisel, João Pessoa - PB",
-                telefone: "(83) 3218-5353",
-                bairros: ["Cidade dos Colibris", "José Américo", "Água Fria", "Cuiá", "Ernesto Geisel", "João Paulo II", "Gramame", "Grotão", "Funcionários", "Costa e Silva", "Ernani Sátiro"],
-                obs: "Nota: Colinas do Sul está inserida no bairro oficial Gramame.",
-                lat: -7.1685, lon: -34.8610
-            },
-            {
-                id: "8ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Parque, s/n, Distrito Industrial, João Pessoa - PB",
-                telefone: "(83) 3218-5357",
-                bairros: ["Distrito Industrial", "Indústrias", "Jardim Veneza", "Mumbaba", "Mussuré"],
-                lat: -7.1720, lon: -34.8980
-            },
-            {
-                id: "9ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Rua Josefa Taveira, s/n, Mangabeira, João Pessoa - PB",
-                telefone: "(83) 3218-5359",
-                bairros: ["Mangabeira", "Costa do Sol", "Bancários", "Jardim São Paulo", "Anatólia", "Jardim Cidade Universitária", "Portal do Sol", "Ponta do Seixas", "Penha"],
-                obs: "Nota: Jacarapé está inserida no bairro oficial Costa do Sol.",
-                lat: -7.1610, lon: -34.8350
-            },
-            {
-                id: "10ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Nego, 820, Tambaú, João Pessoa - PB",
-                telefone: "(83) 3214-8024",
-                bairros: ["Tambaú", "Cabo Branco", "Altiplano Cabo Branco", "Miramar"],
-                lat: -7.113583, lon: -34.829389
-            },
-            {
-                id: "11ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Emília Mendonça Gomes, s/n, Valentina de Figueiredo, João Pessoa - PB",
-                telefone: "(83) 3218-5961 / (83) 3218-5361",
-                bairros: ["Planalto da Boa Esperança", "Valentina", "Paratibe", "Muçumagro", "Barra de Gramame"],
-                lat: -7.1890, lon: -34.8420
-            },
-            {
-                id: "12ª Delegacia Distrital da Capital",
-                cidade: "João Pessoa",
-                endereco: "Rua Manoel Arruda Cavalcante, s/n, Manaíra, João Pessoa - PB",
-                telefone: "(83) 3246-9546 / (83) 3218-5362",
-                bairros: ["Manaíra", "São José", "Bessa", "Aeroclube", "Jardim Oceania", "João Agripino", "Brisamar"],
-                lat: -7.0980, lon: -34.8390
-            },
-            {
-                id: "Deam - Delegacia Especializada da Mulher da Capital",
-                cidade: "João Pessoa",
-                endereco: "Av. Maximiano Figueiredo, 499, Centro, João Pessoa - PB",
-                telefone: "(83) 3218-5321",
-                bairros: ["Centro", "Todos os bairros de João Pessoa"],
-                lat: -7.1215, lon: -34.8750
-            },
-
-            // SECCIONAIS DA PARAÍBA
-            {
-                id: "10ª Delegacia Seccional de Polícia Civil - Campina Grande",
-                cidade: "Campina Grande",
-                endereco: "Av. Raimundo Alves da Silva, s/n, Catolé, Campina Grande - PB",
-                telefone: "(83) 3310-9300 / (83) 3310-9305",
-                bairros: ["Catolé", "Centro", "Jardim Tavares", "Malvinas", "São José", "Prata", "Alto Branco", "Bodocongó", "Cruzeiro", "Liberdade", "Três Irmãs", "Santa Rosa"],
-                cidadesAtendidas: ["Campina Grande", "Lagoa Seca", "Massaranduba", "Puxinanã", "Fagundes"],
-                lat: -7.2306, lon: -35.8811
-            },
-            {
-                id: "15ª Delegacia Seccional de Polícia Civil - Patos",
-                cidade: "Patos",
-                endereco: "Rua Elias Asfora, s/n, Jardim Guanabara, Patos - PB",
-                telefone: "(83) 3423-3635 / (83) 3423-3630",
-                bairros: ["Jardim Guanabara", "Centro", "Brasília", "Belo Horizonte", "São Sebastião", "Jatobá"],
-                cidadesAtendidas: ["Patos", "Santa Teresinha", "São José do Bonfim", "Cacimba de Areia", "Quixaba", "Passagem", "Salgadinho", "Areia de Baraúnas", "Teixeira", "Desterro", "Cacimbas", "Maturéia", "Manaíra", "Santa Luzia", "São José do Sabugi", "Várzea", "Junco do Seridó", "Tenório"],
-                lat: -7.0275, lon: -37.2810
-            },
-            {
-                id: "19ª Delegacia Seccional de Polícia Civil - Sousa",
-                cidade: "Sousa",
-                endereco: "Rua Deputado José de Paiva Gadelha, s/n, Areia, Sousa - PB",
-                telefone: "(83) 3522-1789 / (83) 3522-2615",
-                bairros: ["Areia", "Centro", "Gatos", "Estação", "Alto do Cruzeiro", "Angelim"],
-                cidadesAtendidas: ["Sousa", "Aparecida", "Marizópolis", "Vieirópolis", "Nazarezinho", "São Francisco", "São José da Lagoa Tapada", "Santa Cruz", "Lastro", "Pombal", "Condado", "São Domingos", "São Bentinho", "Cajazeirinhas"],
-                lat: -6.7622, lon: -38.2285
-            },
-            {
-                id: "20ª Delegacia Seccional de Polícia Civil - Cajazeiras",
-                cidade: "Cajazeiras",
-                endereco: "Av. Comandante Vital Rolim, 1500, Centro, Cajazeiras - PB",
-                telefone: "(83) 3531-2948 / (83) 3531-2950",
-                bairros: ["Centro", "Jaguaribe", "Tebas", "Esperança", "Capoeiras"],
-                cidadesAtendidas: ["Cajazeiras", "Cachoeira dos Índios", "Bom Jesus", "Santa Helena", "São João do Rio do Peixe", "Uiraúna", "Poço Dantas", "Poço de José de Moura", "Triunfo", "Joca Claudino", "Bernardino Batista", "São José de Piranhas", "Monte Horebe", "Carrapateira"],
-                lat: -6.8885, lon: -38.5580
-            },
-            {
-                id: "8ª Delegacia Seccional de Polícia Civil - Guarabira",
-                cidade: "Guarabira",
-                endereco: "Rua desembargador Pedro Bandeira, s/n, Centro, Guarabira - PB",
-                telefone: "(83) 3271-1197 / (83) 3271-2900",
-                bairros: ["Centro", "Cachoeira", "Cordeiro", "Nordeste", "Primavera", "São José"],
-                cidadesAtendidas: ["Guarabira", "Pirpirituba", "Pilões", "Cuitegi", "Alagoinha", "Mulungu", "Araçagi", "Sertãozinho", "Duas Estradas", "Lagoa de Dentro", "Serra da Raiz", "Belém", "Dona Inês", "Bananeiras", "Solânea", "Serraria", "Borborema"],
-                lat: -6.8530, lon: -35.4900
-            },
-            {
-                id: "5ª Delegacia Seccional de Polícia Civil - Santa Rita",
-                cidade: "Santa Rita",
-                endereco: "Rua Juarez Távora, s/n, Centro, Santa Rita - PB",
-                telefone: "(83) 3229-3426 / (83) 3229-3500",
-                bairros: ["Centro", "Jardim Miritânia", "Tibiri", "Tibiri II", "Várzea Nova", "Marcos Moura"],
-                cidadesAtendidas: ["Santa Rita", "Cruz do Espírito Santo", "Sobrado"],
-                lat: -7.1130, lon: -34.9780
-            },
-            {
-                id: "3ª Delegacia Seccional de Polícia Civil - Cabedelo",
-                cidade: "Cabedelo",
-                endereco: "Rua Pastor José Alves de Oliveira, s/n, Centro, Cabedelo - PB",
-                telefone: "(83) 3228-6141 / (83) 3228-6140",
-                bairros: ["Centro", "Ponta de Matos", "Intermares", "Poço", "Formosa", "Renascer"],
-                cidadesAtendidas: ["Cabedelo", "Lucena"],
-                lat: -6.9810, lon: -34.8340
-            },
-            {
-                id: "4ª Delegacia Seccional de Polícia Civil - Bayeux",
-                cidade: "Bayeux",
-                endereco: "Av. Liberdade, s/n, Centro, Bayeux - PB",
-                telefone: "(83) 3253-2000 / (83) 3253-2001",
-                bairros: ["Centro", "Alto da Boa Vista", "Jardim Mário Andreazza", "Tambay", "Mário Andreazza", "Sesi"],
-                cidadesAtendidas: ["Bayeux"],
-                lat: -7.1250, lon: -34.9320
-            },
-            {
-                id: "6ª Delegacia Seccional de Polícia Civil - Alhandra",
-                cidade: "Alhandra",
-                endereco: "Rua Presidente João Pessoa, s/n, Centro, Alhandra - PB",
-                telefone: "(83) 3256-1172",
-                bairros: ["Centro", "Nossa Senhora dos Salgados"],
-                cidadesAtendidas: ["Alhandra", "Conde", "Pitimbu", "Caaporã", "Pedras de Fogo"],
-                lat: -7.4360, lon: -34.9080
-            },
-            {
-                id: "7ª Delegacia Seccional de Polícia Civil - Mamanguape",
-                cidade: "Mamanguape",
-                endereco: "Rua Senador João da Mata, s/n, Centro, Mamanguape - PB",
-                telefone: "(83) 3292-1900",
-                bairros: ["Centro", "Gurguri", "Areial"],
-                cidadesAtendidas: ["Mamanguape", "Rio Tinto", "Baía da Traição", "Marcação", "Mataraca", "Jacaraú", "Pedro Régis", "Curral de Cima", "Capim", "Itapororoca", "Cuité de Mamanguape"],
-                lat: -6.8390, lon: -35.1260
-            },
-            {
-                id: "11ª Delegacia Seccional de Polícia Civil - Queimadas",
-                cidade: "Queimadas",
-                endereco: "Rua César Ribeiro, s/n, Centro, Queimadas - PB",
-                telefone: "(83) 3392-1034",
-                bairros: ["Centro", "Castelo Branco"],
-                cidadesAtendidas: ["Queimadas", "Aroeiras", "Gado Bravo", "Umbuzeiro", "Natuba", "Santa Cecília", "Barra de Santana", "Boqueirão", "Caturité", "Riacho de Santo Antônio", "Barra de São Miguel", "Cabaceiras"],
-                lat: -7.3580, lon: -35.8990
-            },
-            {
-                id: "12ª Delegacia Seccional de Polícia Civil - Esperança",
-                cidade: "Esperança",
-                endereco: "Rua Solón de Lucena, s/n, Centro, Esperança - PB",
-                telefone: "(83) 3361-2385",
-                bairros: ["Centro", "Beira Rio"],
-                cidadesAtendidas: ["Esperança", "Areial", "Montadas", "Remígio", "Algodão de Jandaíra", "Arara", "São Sebastião de Lagoa de Roça"],
-                lat: -7.0250, lon: -35.8560
-            },
-            {
-                id: "13ª Delegacia Seccional de Polícia Civil - Picuí",
-                cidade: "Picuí",
-                endereco: "Rua Cel. José Maria, s/n, Centro, Picuí - PB",
-                telefone: "(83) 3371-2324",
-                bairros: ["Centro", "Limeira"],
-                cidadesAtendidas: ["Picuí", "Cuité", "Nova Floresta", "Baraúna", "Frei Martinho", "Nova Palmeira", "Pedra Lavrada", "Sossêgo", "Cubati"],
-                lat: -6.5110, lon: -36.3470
-            },
-            {
-                id: "14ª Delegacia Seccional de Polícia Civil - Monteiro",
-                cidade: "Monteiro",
-                endereco: "Rua Epaminondas Mendonça, s/n, Centro, Monteiro - PB",
-                telefone: "(83) 3351-2147",
-                bairros: ["Centro", "Alto de São Vicente"],
-                cidadesAtendidas: ["Monteiro", "Sumé", "Zabelê", "Ouro Velho", "Prata", "Amparo", "Camalaú", "Congo", "Coxixola", "São João do Cariri", "São José dos Cordeiros", "Parari", "Gurjão", "Santo André", "Serra Branca"],
-                lat: -7.8890, lon: -37.1210
-            },
-            {
-                id: "16ª Delegacia Seccional de Polícia Civil - Princesa Isabel",
-                cidade: "Princesa Isabel",
-                endereco: "Rua Arrojado Lisboa, s/n, Centro, Princesa Isabel - PB",
-                telefone: "(83) 3457-2000",
-                bairros: ["Centro", "Maia"],
-                cidadesAtendidas: ["Princesa Isabel", "Tavares", "Juru", "Água Branca", "Imaculada", "São José de Princesa"],
-                lat: -7.7340, lon: -37.9940
-            },
-            {
-                id: "17ª Delegacia Seccional de Polícia Civil - Itaporanga",
-                cidade: "Itaporanga",
-                endereco: "Rua 9 de Julho, s/n, Centro, Itaporanga - PB",
-                telefone: "(83) 3451-2219",
-                bairros: ["Centro", "Alto das Neves"],
-                cidadesAtendidas: ["Itaporanga", "Piancó", "Olho d'Água", "Emas", "Catingueira", "Igaracy", "Aguiar", "Boa Ventura", "Coremas", "Diamante", "Ibiara", "Santana de Mangueira", "Santa Inês", "Conceição", "Bonito de Santa Fé", "Serra Grande", "São José de Caiana", "Nova Olinda", "Pedra Branca", "Santana dos Garrotes"],
-                lat: -7.3040, lon: -38.1510
-            },
-            {
-                id: "18ª Delegacia Seccional de Polícia Civil - Catolé do Rocha",
-                cidade: "Catolé do Rocha",
-                endereco: "Rua Américo Hermógenes, s/n, Centro, Catolé do Rocha - PB",
-                telefone: "(83) 3441-1847",
-                bairros: ["Centro", "Loteamento Luzia Maia"],
-                cidadesAtendidas: ["Catolé do Rocha", "Brejo do Cruz", "Belém do Brejo do Cruz", "São José do Brejo do Cruz", "Riacho dos Cavalos", "Mato Grosso", "Jericó", "Lagoa", "Paulista", "São Bento"],
-                lat: -6.3440, lon: -37.7470
-            }
-        ];
-
-        const sinonimos = {
-            "jacarape": { oficial: "Costa do Sol", cidade: "João Pessoa" },
-            "colinas do sul": { oficial: "Gramame", cidade: "João Pessoa" },
-            "intermares": { oficial: "Intermares", cidade: "Cabedelo" },
-            "tibiri": { oficial: "Tibiri", cidade: "Santa Rita" },
-            "catole": { oficial: "Catolé", cidade: "Campina Grande" },
-            "bodocongo": { oficial: "Bodocongó", cidade: "Campina Grande" }
-        };
-
-        // Elementos da Interface
-        const cidadeSelect = document.getElementById('cidade-select');
-        const bairroSelect = document.getElementById('bairro-select');
-        const searchInput = document.getElementById('search-input');
-        const suggestionsBox = document.getElementById('suggestions');
-        const resultsContainer = document.getElementById('results-container');
-        const cityChips = document.querySelectorAll('.city-chip');
-
-        const API_BASE = "https://api-sgpp-gedes.rke.codataprd.pb.gov.br/api/v1";
-
-        // Inicialização das Cidades com nomes em Title Case
-        function initCidades() {
-            cidadeSelect.innerHTML = '<option value="">-- Escolha uma cidade (223 disponíveis) --</option>';
-            municipiosData.forEach(mun => {
-                const opt = document.createElement('option');
-                opt.value = mun.nome;
-                opt.dataset.id = mun.id;
-                opt.textContent = mun.nome;
-                cidadeSelect.appendChild(opt);
-            });
-        }
-
-        // Carregar Bairros dinamicamente
-        async function carregarBairros(cidadeNome) {
-            bairroSelect.innerHTML = '<option value="">-- Carregando bairros... --</option>';
-            bairroSelect.disabled = true;
-
-            const cNorm = normalizeText(cidadeNome);
-            const munObj = municipiosData.find(m => normalizeText(m.nome) === cNorm);
-            let bairros = [];
-
-            if (munObj && munObj.id) {
-                try {
-                    const response = await fetch(`${API_BASE}/consulta/bairros?municipio=${munObj.id}`);
-                    if (response.ok) {
-                        bairros = await response.json();
-                    }
-                } catch (e) {
-                    console.warn("API de bairros indisponível, usando lista local:", e);
-                }
-            }
-
-            // Fallback para bairros locais se a API não retornar
-            if (!bairros || bairros.length === 0) {
-                const localDels = delegaciasLocaisData.filter(d => normalizeText(d.cidade) === cNorm);
-                const localBairrosSet = new Set();
-                localDels.forEach(d => {
-                    if (d.bairros) d.bairros.forEach(b => localBairrosSet.add(b));
-                });
-                bairros = Array.from(localBairrosSet);
-            }
-
-            if (bairros && bairros.length > 0) {
-                bairroSelect.innerHTML = '<option value="">-- Todos os Bairros --</option>';
-                bairros.sort((a, b) => normalizeText(a).localeCompare(normalizeText(b))).forEach(b => {
-                    const opt = document.createElement('option');
-                    opt.value = b;
-                    opt.textContent = b;
-                    bairroSelect.appendChild(opt);
-                });
-                bairroSelect.disabled = false;
-            } else {
-                bairroSelect.innerHTML = '<option value="">-- Nenhum bairro específico cadastrado --</option>';
-                bairroSelect.disabled = true;
-            }
-        }
-
-        // Buscar Delegacias (Insensível a acento/maiúscula + API/Local)
-        async function buscarDelegacias(cidade, bairro = "") {
-            resultsContainer.innerHTML = '<div class="no-results">Buscando delegacias...</div>';
-
-            let delegaciasRetornadas = [];
-            let isLiveApi = false;
-
-            if (cidade) {
-                try {
-                    let url = `${API_BASE}/consulta/lista-delegacias?municipio=${encodeURIComponent(cidade)}&limit=100`;
-                    if (bairro) {
-                        url += `&bairro=${encodeURIComponent(bairro)}`;
-                    }
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data && data.itens && data.itens.length > 0) {
-                            delegaciasRetornadas = data.itens.map(item => ({
-                                id: item.nomeUnidade,
-                                cidade: cidade,
-                                endereco: item.endereco || "Endereço não informado",
-                                bairro: item.bairro || bairro || cidade,
-                                telefone: item.telefone || "Disque 197",
-                                lat: item.latitude,
-                                lon: item.longitude,
-                                isLive: true
-                            }));
-                            isLiveApi = true;
-                        }
-                    }
-                } catch (err) {
-                    console.warn("API de delegacias offline, usando dados locais:", err);
-                }
-            }
-
-            // Se a API não retornou delegacias, usar o fallback local com normalização
-            if (delegaciasRetornadas.length === 0 && cidade) {
-                const cNorm = normalizeText(cidade);
-
-                // 1. Delegacias na própria cidade
-                let correspondentes = delegaciasLocaisData.filter(d => normalizeText(d.cidade) === cNorm);
-
-                // Filtrar por bairro se especificado
-                if (bairro && correspondentes.length > 0) {
-                    const bNorm = normalizeText(bairro);
-                    const porBairro = correspondentes.filter(d => d.bairros && d.bairros.some(b => normalizeText(b) === bNorm));
-                    if (porBairro.length > 0) correspondentes = porBairro;
-                }
-
-                // 2. Se não houver delegacia distrital cadastrada, buscar a Delegacia Seccional responsável
-                if (correspondentes.length === 0) {
-                    correspondentes = delegaciasLocaisData.filter(d =>
-                        d.cidadesAtendidas && d.cidadesAtendidas.some(c => normalizeText(c) === cNorm)
-                    );
-                }
-
-                delegaciasRetornadas = correspondentes;
-            }
-
-            renderizarResultados(delegaciasRetornadas, cidade, bairro, isLiveApi);
-        }
-
-        // Renderização dos Cards
-        function renderizarResultados(delegacias, cidadeFiltro, bairroFiltro, isLiveApi = false) {
-            resultsContainer.innerHTML = '';
-
-            if (!delegacias || delegacias.length === 0) {
-                resultsContainer.innerHTML = `
-                    <div class="no-results">
-                        <h3>Nenhuma delegacia específica encontrada para "${cidadeFiltro || 'esta consulta'}"</h3>
-                        <p style="margin-top: 0.5rem; font-size: 0.88rem;">
-                            Para atendimento neste município, acesse a 
-                            <a href="https://delegaciaonline.pc.pb.gov.br" target="_blank" style="color: #ffffff; font-weight: 600;">Delegacia Online PB</a> 
-                            ou entre em contato com a Central via Disque 197.
-                        </p>
-                    </div>
-                `;
-                return;
-            }
-
-            delegacias.forEach(del => {
-                const card = document.createElement('div');
-                card.className = 'result-card';
-
-                const searchMapQuery = encodeURIComponent(`${del.id} ${del.endereco} ${del.cidade || cidadeFiltro || ''}`);
-                const mapsUrl = (del.lat && del.lon)
-                    ? `https://www.google.com/maps/search/?api=1&query=${del.lat},${del.lon}`
-                    : `https://www.google.com/maps/search/?api=1&query=${searchMapQuery}`;
-
-                const statusBadge = isLiveApi || del.isLive
-                    ? '<span class="status-tag status-live">Ao Vivo (PCPB)</span>'
-                    : '<span class="status-tag status-cached">Seccional PB</span>';
-
-                const telFormatted = del.telefone || "(83) 3218-5300";
-                const telRaw = telFormatted.replace(/[^0-9]/g, '');
-
-                card.innerHTML = `
-                    <div class="result-header">
-                        <div class="result-title-group">
-                            <h3>${del.id} ${statusBadge}</h3>
-                            <div class="result-subtitle">Circunscrição: ${del.cidade || cidadeFiltro} / PB</div>
-                        </div>
-                        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="maps-btn">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                            </svg>
-                            Ver no Google Maps
-                        </a>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-group">
-                            <strong>Município:</strong> <span>${del.cidade || cidadeFiltro}</span>
-                        </div>
-                        ${del.bairro ? `<div class="info-group"><strong>Bairro / Região:</strong> <span>${del.bairro}</span></div>` : ''}
-                        <div class="info-group">
-                            <strong>Endereço:</strong> <span>${del.endereco}</span>
-                        </div>
-                        <div class="info-group">
-                            <strong>Telefone:</strong> 
-                            <a href="tel:${telRaw}" class="tel-link">${telFormatted}</a>
-                        </div>
-                    </div>
-                    ${del.obs ? `<div class="obs-text">${del.obs}</div>` : ''}
-                `;
-                resultsContainer.appendChild(card);
-            });
-        }
-
-        // Eventos dos Controles
-        cidadeSelect.addEventListener('change', function () {
-            const cidade = this.value;
-            const cNorm = normalizeText(cidade);
-            cityChips.forEach(chip => {
-                chip.classList.toggle('active', normalizeText(chip.dataset.city) === cNorm);
-            });
-
-            if (cidade) {
-                carregarBairros(cidade);
-                buscarDelegacias(cidade, "");
-            } else {
-                bairroSelect.innerHTML = '<option value="">-- Todos os Bairros / Selecione a Cidade --</option>';
-                bairroSelect.disabled = true;
-                resultsContainer.innerHTML = '';
-            }
-        });
-
-        bairroSelect.addEventListener('change', function () {
-            const cidade = cidadeSelect.value;
-            const bairro = this.value;
-            if (cidade) {
-                buscarDelegacias(cidade, bairro);
-            }
-        });
-
-        // Chips de Cidade Rápida
-        cityChips.forEach(chip => {
-            chip.addEventListener('click', function () {
-                const cidade = this.dataset.city;
-                const cNorm = normalizeText(cidade);
-
-                // Achar nome exato na lista
-                const targetMun = municipiosData.find(m => normalizeText(m.nome) === cNorm);
-                const nomeFinal = targetMun ? targetMun.nome : cidade;
-
-                cidadeSelect.value = nomeFinal;
-                cidadeSelect.dispatchEvent(new Event('change'));
-            });
-        });
-
-        // Autocomplete Inteligente (Sem diferenciar acentos/maiúsculas)
-        searchInput.addEventListener('input', function () {
-            const queryRaw = this.value;
-            const queryNorm = normalizeText(queryRaw);
-            suggestionsBox.innerHTML = '';
-
-            if (queryNorm.length < 2) {
-                suggestionsBox.style.display = 'none';
-                return;
-            }
-
-            const matches = [];
-
-            // 1. Procurar em Cidades
-            municipiosData.forEach(m => {
-                if (normalizeText(m.nome).includes(queryNorm)) {
-                    matches.push({ text: m.nome, type: 'Cidade', cidade: m.nome, bairro: '' });
-                }
-            });
-
-            // 2. Procurar em Delegacias Locais
-            delegaciasLocaisData.forEach(d => {
-                if (normalizeText(d.id).includes(queryNorm)) {
-                    matches.push({ text: d.id, type: 'Delegacia', cidade: d.cidade, bairro: '' });
-                }
-                if (d.bairros) {
-                    d.bairros.forEach(b => {
-                        if (normalizeText(b).includes(queryNorm)) {
-                            matches.push({ text: `${b} (${d.cidade})`, type: 'Bairro', cidade: d.cidade, bairro: b });
-                        }
-                    });
-                }
-            });
-
-            // 3. Sinônimos/Comunidades
-            Object.keys(sinonimos).forEach(key => {
-                if (normalizeText(key).includes(queryNorm)) {
-                    const info = sinonimos[key];
-                    matches.push({ text: `${key.toUpperCase()} (Comunidade em ${info.oficial})`, type: 'Comunidade', cidade: info.cidade, bairro: info.oficial });
-                }
-            });
-
-            // Limitar a 8 sugestões
-            const limitedMatches = matches.slice(0, 8);
-
-            if (limitedMatches.length > 0) {
-                suggestionsBox.style.display = 'block';
-                limitedMatches.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.innerHTML = `<span>${item.text}</span><span class="suggestion-tag">${item.type}</span>`;
-                    div.addEventListener('click', function () {
-                        searchInput.value = item.text;
-                        suggestionsBox.style.display = 'none';
-                        cidadeSelect.value = item.cidade;
-                        carregarBairros(item.cidade).then(() => {
-                            if (item.bairro) bairroSelect.value = item.bairro;
-                            buscarDelegacias(item.cidade, item.bairro);
-                        });
-                    });
-                    suggestionsBox.appendChild(div);
-                });
-            } else {
-                suggestionsBox.style.display = 'none';
-            }
-        });
-
-        document.addEventListener('click', function (e) {
-            if (!e.target.closest('.relative-wrapper')) {
-                suggestionsBox.style.display = 'none';
-            }
-        });
-
-        // Inicialização ao Carregar
-        initCidades();
-
-        // Padrão: João Pessoa pré-selecionada
-        cidadeSelect.value = "João Pessoa";
-        cidadeSelect.dispatchEvent(new Event('change'));
-    </script>
+    initCidades();initEspecializadas();cidadeSelect.value="João Pessoa";cidadeSelect.dispatchEvent(new Event('change'));
+  </script>
 </body>
-
 </html>
